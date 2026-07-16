@@ -51,6 +51,7 @@ subprojects {
             url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
             content {
                 includeGroup("software.bernie.geckolib")
+                includeGroup("com.eliotlash.mclib")
             }
         }
 
@@ -71,14 +72,20 @@ subprojects {
             // parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip") // ParchmentMC版本，目前最新2024.11.17
         }
 
-        modCompileOnly "me.lucko:fabric-permissions-api:0.3.1"
+        modCompileOnly("me.lucko:fabric-permissions-api:0.3.1") {
+            transitive = false
+        }
         modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
         implementation "com.github.CSneko:NekoAI:$rootProject.nekoai_version"
 
-        implementation 'io.netty:netty-codec-http:4.1.117.Final'
+        compileOnly("io.netty:netty-codec-http:4.1.117.Final") {
+            transitive = false
+        }
 
-        implementation 'io.netty:netty-handler-proxy:4.1.117.Final'
+        compileOnly("io.netty:netty-handler-proxy:4.1.117.Final") {
+            transitive = false
+        }
 
         implementation 'com.github.umjammer:jlayer:1.0.3'
 
