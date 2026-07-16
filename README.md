@@ -1,6 +1,9 @@
 # toNeko
 **[简体中文](README.md)** | [English](README_en.md)
 
+> [!IMPORTANT]
+> 本仓库的 `1.20.1-backport` 分支是 [CSneko/toNeko](https://github.com/CSneko/toNeko) 的非官方 Minecraft 1.20.1 降级分支，并非上游项目的官方发行版。降级工作基于上游 `V1.9.0`，继续依照 GPL-3.0 开源。进度与兼容范围见 [BACKPORT.md](BACKPORT.md)。
+
 ![break with optifine](https://wsrv.nl/?url=https%3A%2F%2Fimages.teamresourceful.com%2Fu%2F8vCLgK.svg&n=-1)
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/tonekomod)

@@ -1,6 +1,9 @@
 # toNeko
 [简体中文](README.md) | **[English](README_en.md)**
 
+> [!IMPORTANT]
+> The `1.20.1-backport` branch is an unofficial Minecraft 1.20.1 backport of [CSneko/toNeko](https://github.com/CSneko/toNeko), not an official upstream release. It is based on upstream `V1.9.0` and remains open source under GPL-3.0. See [BACKPORT.md](BACKPORT.md) for status and compatibility scope.
+
 ![break with optifine](https://wsrv.nl/?url=https%3A%2F%2Fimages.teamresourceful.com%2Fu%2F8vCLgK.svg&n=-1)
 
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/tonekomod)
