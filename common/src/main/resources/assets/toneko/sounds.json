@@ -31,7 +31,6 @@
   "item.bazooka.meow": {
     "category": "master",
     "sounds": [
-      {"name": "toneko:item/bazooka/meow/meow0"},
       {"name": "toneko:item/bazooka/meow/meow1"},
       {"name": "toneko:item/bazooka/meow/meow2"},
       {"name": "toneko:item/bazooka/meow/meow3"},
