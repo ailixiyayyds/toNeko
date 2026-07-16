@@ -14,23 +14,23 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 public class BewitchedEffect extends MobEffect {
     public static final String ID = "bewitched";
     public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
+    private static final String MODIFIER_UUID = "1fb677ba-7161-4f34-aee0-b911384b3a11";
 
     public BewitchedEffect() {
         super(MobEffectCategory.HARMFUL, 0xFFB6C1);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED,LOCATION,-0.03, AttributeModifier.Operation.ADD_VALUE);
-        this.addAttributeModifier(Attributes.ATTACK_SPEED,LOCATION,-0.1, AttributeModifier.Operation.ADD_VALUE);
-        this.addAttributeModifier(Attributes.JUMP_STRENGTH,LOCATION,-0.1, AttributeModifier.Operation.ADD_VALUE);
-        this.addAttributeModifier(Attributes.ATTACK_DAMAGE,LOCATION,-0.5, AttributeModifier.Operation.ADD_VALUE);
-        this.addAttributeModifier(Attributes.ENTITY_INTERACTION_RANGE, LOCATION, -1.0, AttributeModifier.Operation.ADD_VALUE);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MODIFIER_UUID, -0.03, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.ATTACK_SPEED, MODIFIER_UUID, -0.1, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.JUMP_STRENGTH, MODIFIER_UUID, -0.1, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, MODIFIER_UUID, -0.5, AttributeModifier.Operation.ADDITION);
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         // 10%的概率冒出一颗爱心
         if (entity.level().getRandom().nextFloat() < 0.1f) {
             entity.level().addParticle(
@@ -41,6 +41,6 @@ public class BewitchedEffect extends MobEffect {
                 0, 0, 0
             );
         }
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 }

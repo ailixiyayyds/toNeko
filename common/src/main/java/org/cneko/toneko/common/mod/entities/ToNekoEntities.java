@@ -55,28 +55,28 @@ public class ToNekoEntities {
     public static Supplier<EntityType<CrystalNekoEntity>> getCrystalNeko(){
         return
                 ()-> EntityType.Builder.of(CrystalNekoEntity::new, MobCategory.CREATURE)
-                .sized(0.5f,1.7f).eyeHeight(1.6f).clientTrackingRange(8)
+                .sized(0.5f,1.7f).clientTrackingRange(8)
                 .build("crystal_neko");
     }
     @ApiStatus.Internal
     public static Supplier<EntityType<AdventurerNeko>> getAdventurerNeko(){
         return
                 ()-> EntityType.Builder.of(AdventurerNeko::new, MobCategory.CREATURE)
-                        .sized(0.5f,1.7f).eyeHeight(1.6f).clientTrackingRange(8)
+                        .sized(0.5f,1.7f).clientTrackingRange(8)
                         .build("adventure_neko");
     }
     @ApiStatus.Internal
     public static Supplier<EntityType<GhostNekoEntity>> getGhostNeko(){
         return
                 ()-> EntityType.Builder.of(GhostNekoEntity::new, MobCategory.CREATURE)
-                        .sized(0.5f,1.6f).eyeHeight(1.5f).clientTrackingRange(8)
+                        .sized(0.5f,1.6f).clientTrackingRange(8)
                         .build("ghost_neko");
     }
     @ApiStatus.Internal
      public static Supplier<EntityType<FightingNekoEntity>> getFightingNeko(){
         return
                 ()-> EntityType.Builder.of(FightingNekoEntity::new, MobCategory.CREATURE)
-                        .sized(0.5f,1.7f).eyeHeight(1.6f).clientTrackingRange(8)
+                        .sized(0.5f,1.7f).clientTrackingRange(8)
                         .build("fighting_neko");
     }
     @ApiStatus.Internal
@@ -104,7 +104,7 @@ public class ToNekoEntities {
     public static Supplier<EntityType<NoelleMaidNekoEntity>> getNoelleMaidNeko(){
         return
                 ()-> EntityType.Builder.of(NoelleMaidNekoEntity::new, MobCategory.CREATURE)
-                        .sized(0.5f,1.7f).eyeHeight(1.6f).clientTrackingRange(8)
+                        .sized(0.5f,1.7f).clientTrackingRange(8)
                         .build("noelle_maid_neko");
     }
 

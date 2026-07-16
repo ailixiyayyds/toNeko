@@ -1,5 +1,9 @@
 package org.cneko.toneko.common.mod.items;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +19,7 @@ public class FurryBoheItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag type) {
         tooltip.add(Component.translatable("item.toneko.furry_bohe.info"));
     }
 }

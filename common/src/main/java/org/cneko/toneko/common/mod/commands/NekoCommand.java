@@ -263,7 +263,7 @@ public class NekoCommand {
         return giveEffect(context, MobEffects.JUMP);
     }
 
-    public static int giveEffect(CommandContext<CommandSourceStack> context, Holder<MobEffect> effect) {
+    public static int giveEffect(CommandContext<CommandSourceStack> context, MobEffect effect) {
         ServerPlayer player = context.getSource().getPlayer();
         if(!player.isNeko()){
             player.sendSystemMessage(translatable("command.neko.not_neko"));

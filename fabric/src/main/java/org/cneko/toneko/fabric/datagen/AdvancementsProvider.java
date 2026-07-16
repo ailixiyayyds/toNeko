@@ -3,10 +3,8 @@ package org.cneko.toneko.fabric.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import org.cneko.toneko.common.mod.advencements.GiftNekoTrigger;
 import org.cneko.toneko.common.mod.advencements.NekoLevelTrigger;
@@ -19,27 +17,27 @@ import static org.cneko.toneko.common.mod.util.TextUtil.translatable;
 import static org.cneko.toneko.fabric.items.ToNekoItems.NEKO_COLLECTOR;
 
 public class AdvancementsProvider extends FabricAdvancementProvider {
-    public static AdvancementHolder NEKO_ATTRACTING;
-    public static AdvancementHolder GOT_NEKO_POTION;
-    public static AdvancementHolder NEKO_ARMOR;
-    public static AdvancementHolder CATNIP;
-    public static AdvancementHolder FIRST_GIFT;
-    public static AdvancementHolder NEKO_LV100;
+    public static Advancement NEKO_ATTRACTING;
+    public static Advancement GOT_NEKO_POTION;
+    public static Advancement NEKO_ARMOR;
+    public static Advancement CATNIP;
+    public static Advancement FIRST_GIFT;
+    public static Advancement NEKO_LV100;
 
     protected AdvancementsProvider(FabricDataOutput output) {
-        super(output,ToNekoDataGenerator.generator.getRegistries());
+        super(output);
     }
 
 
     @Override
-    public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
+    public void generateAdvancement(Consumer<Advancement> consumer) {
         NEKO_ATTRACTING = Advancement.Builder.advancement()
                 .display(
                         ToNekoItems.NEKO_EARS, // 以猫耳朵作为图标
                         translatable("advancements.toneko.root.title"),
                         translatable("advancements.toneko.root.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
                         false // 不隐藏进度
@@ -52,7 +50,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         translatable("advancements.toneko.got_neko_potion.title"),
                         translatable("advancements.toneko.got_neko_potion.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
                         false // 不隐藏进度
@@ -66,7 +64,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         translatable("advancements.toneko.neko_armor.title"),
                         translatable("advancements.toneko.neko_armor.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
                         false // 不隐藏进度
@@ -80,7 +78,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         translatable("advancements.toneko.catnip.title"),
                         translatable("advancements.toneko.catnip.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true,
                         false
@@ -95,7 +93,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         translatable("advancements.toneko.first_gift.title"),
                         translatable("advancements.toneko.first_gift.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true,
                         true,
                         false
@@ -110,7 +108,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         translatable("advancements.toneko.neko_lv100.title"),
                         translatable("advancements.toneko.neko_lv100.description"),
                         new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
-                        AdvancementType.GOAL,
+                        FrameType.GOAL,
                         true,
                         true,
                         false

@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import org.cneko.toneko.common.mod.packets.OpenPlotScreenPayload;
 import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class PlotScrollItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         tooltipComponents.add(Component.literal("暂时没用，不要管它"));
     }
 }

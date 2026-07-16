@@ -133,9 +133,9 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
                 double amount = attrJson.get("amount").getAsDouble();
 
                 AttributeModifier.Operation op = switch (operationStr) {
-                    case "add_value" -> AttributeModifier.Operation.ADD_VALUE;
-                    case "add_multiplied_base" -> AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                    case "add_multiplied_total" -> AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
+                    case "add_value" -> AttributeModifier.Operation.ADDITION;
+                    case "add_multiplied_base" -> AttributeModifier.Operation.MULTIPLY_BASE;
+                    case "add_multiplied_total" -> AttributeModifier.Operation.MULTIPLY_TOTAL;
                     default -> {
                         LOGGER.warn("等位基因 {} 包含未知操作类型: {}", id, operationStr);
                         yield null;
@@ -152,7 +152,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
                     continue;
                 }
 
-                allele.addAttributeModifier(attribute, suffix, amount, op);
+                allele.addAttributeModifier(attribute.value(), suffix, amount, op);
             }
         }
 

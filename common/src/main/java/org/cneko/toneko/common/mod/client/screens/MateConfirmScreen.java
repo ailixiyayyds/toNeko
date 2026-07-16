@@ -49,7 +49,7 @@ public class MateConfirmScreen extends Screen {
 
     // 移除背景渲染
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull GuiGraphics guiGraphics) {
     }
 
 }

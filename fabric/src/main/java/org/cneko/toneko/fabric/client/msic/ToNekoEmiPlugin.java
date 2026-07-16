@@ -8,7 +8,6 @@ import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.cneko.toneko.common.mod.blocks.NekoAggregatorBlock;
 import org.cneko.toneko.common.mod.items.ToNekoItems;
@@ -47,8 +46,10 @@ public class ToNekoEmiPlugin implements EmiPlugin {
 
         // 遍历所有该类型的配方
         // 注意：manager.getAllRecipesFor 返回的是 List<RecipeHolder<T>>
-        for (RecipeHolder<NekoAggregatorRecipe> holder : manager.getAllRecipesFor(ToNekoRecipes.NEKO_AGGREGATOR)) {
-            registry.addRecipe(new NekoAggregatorEmiRecipe(NEKO_AGGREGATOR_CATEGORY, holder));
+        int recipeIndex = 0;
+        for (NekoAggregatorRecipe recipe : manager.getAllRecipesFor(ToNekoRecipes.NEKO_AGGREGATOR)) {
+            registry.addRecipe(new NekoAggregatorEmiRecipe(NEKO_AGGREGATOR_CATEGORY,
+                    toNekoLoc("neko_aggregator/" + recipeIndex++), recipe));
         }
 
 

@@ -14,23 +14,24 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 public class ExcitingEffect extends MobEffect {
     public static final String ID = "exciting";
     public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
+    private static final String MODIFIER_UUID = "da9da7f3-da76-48f6-b346-9b863b4fce09";
 
     public ExcitingEffect() {
         super(MobEffectCategory.NEUTRAL, 0xFF00FF);
-        this.addAttributeModifier(ToNekoAttributes.NEKO_DEGREE,LOCATION,0.05, AttributeModifier.Operation.ADD_VALUE);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED,LOCATION,0.3, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        this.addAttributeModifier(Attributes.ATTACK_SPEED,LOCATION,0.3, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        this.addAttributeModifier(Attributes.JUMP_STRENGTH,LOCATION,0.3, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        this.addAttributeModifier(Attributes.ATTACK_DAMAGE,LOCATION,0.3, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        this.addAttributeModifier(ToNekoAttributes.NEKO_DEGREE, MODIFIER_UUID, 0.05, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MODIFIER_UUID, 0.3, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.ATTACK_SPEED, MODIFIER_UUID, 0.3, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.JUMP_STRENGTH, MODIFIER_UUID, 0.3, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, MODIFIER_UUID, 0.3, AttributeModifier.Operation.MULTIPLY_BASE);
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
-        return super.applyEffectTick(entity, amplifier);
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+        super.applyEffectTick(entity, amplifier);
     }
 }

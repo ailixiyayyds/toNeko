@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.core.object.Color;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
@@ -30,7 +30,7 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
     @Override
     public void preRender(PoseStack poseStack, T item, BakedGeoModel model, @Nullable MultiBufferSource bufferSource,
                           @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight,
-                          int packedOverlay, int colour) {
+                          int packedOverlay, float red, float green, float blue, float alpha) {
         // 如果有反转附魔
         if (EnchantmentUtil.hasEnchantment(ToNekoEnchantments.REVERSION.location(), this.currentStack)) {
             // 旋转180度
@@ -39,13 +39,13 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
             poseStack.translate(0, -1.5, -0.0625);
         }
 
-        super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
     public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, @Nullable RenderType renderType,
                                MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick,
-                               int packedLight, int packedOverlay, int colour) {
+                               int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         // 染色
         try {
             // 如果有染色
@@ -55,18 +55,18 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
                 Color renderColor = this.getRenderColor(animatable, partialTick, packedLight);
 
                 // 渲染物品颜色
-                buffer = buffer.setColor(renderColor.getRed(), renderColor.getGreen(), renderColor.getBlue(), renderColor.getAlpha());
-
-                colour = renderColor.getColor();
+                red *= renderColor.getRedFloat();
+                green *= renderColor.getGreenFloat();
+                blue *= renderColor.getBlueFloat();
+                alpha *= renderColor.getAlphaFloat();
             }
 
         } catch (Exception ignored) {
         }
 
-        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    @Override
     public Color getRenderColor(T animatable, float partialTick, int packedLight) {
         // 默认为浅蓝色
         int color = 6463722;
@@ -97,12 +97,12 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
         }
 
         @Override
-        public void preRender(PoseStack poseStack, NekoArmor.NekoTailItem item, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        public void preRender(PoseStack poseStack, NekoArmor.NekoTailItem item, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
             if (this.currentEntity.isShiftKeyDown()){
                 // 向后移动一点
                 poseStack.translate(0, 0, 0.35);
             }
-            super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+            super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         }
     }
 

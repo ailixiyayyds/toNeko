@@ -27,7 +27,8 @@ public class PlayerRendererMixin {
                               MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
         if (!ConfigUtil.isLoliHeadEnabled()) return;
         // 只有猫娘才触发萝莉头效果
-        if (!(player instanceof INeko neko) || !neko.isNeko()) return;
+        INeko neko = (INeko) player;
+        if (!neko.isNeko()) return;
 
         // 根据猫娘年龄计算身体缩放比例
         double ageScale = neko.getNekoAgeScale();
@@ -58,7 +59,8 @@ public class PlayerRendererMixin {
     private void afterRender(AbstractClientPlayer player, float f, float g, PoseStack poseStack,
                              MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
         if (!ConfigUtil.isLoliHeadEnabled()) return;
-        if (!(player instanceof INeko neko) || !neko.isNeko()) return;
+        INeko neko = (INeko) player;
+        if (!neko.isNeko()) return;
         if (neko.getNekoAgeScale() >= 1.0f) return;
 
         poseStack.popPose();

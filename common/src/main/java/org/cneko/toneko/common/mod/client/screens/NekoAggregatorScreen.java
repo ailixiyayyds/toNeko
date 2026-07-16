@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.cneko.toneko.common.mod.blocks.NekoAggregatorBlock;
 import org.cneko.toneko.common.mod.recipes.NekoAggregatorInput;
 import org.cneko.toneko.common.mod.recipes.NekoAggregatorRecipe;
@@ -187,10 +186,10 @@ public class NekoAggregatorScreen extends AbstractContainerScreen<NekoAggregator
 
         NekoAggregatorInput input = NekoAggregatorInput.of(3, 3, inputs, 0);
 
-        Optional<RecipeHolder<NekoAggregatorRecipe>> recipe = this.minecraft.level.getRecipeManager()
+        Optional<NekoAggregatorRecipe> recipe = this.minecraft.level.getRecipeManager()
                 .getRecipeFor(ToNekoRecipes.NEKO_AGGREGATOR, input, this.minecraft.level);
 
         // 使用 map 获取值，如果是 null (没配方) 默认为 0
-        return recipe.map(holder -> holder.value().energy).orElse(0d).intValue();
+        return recipe.map(value -> value.energy).orElse(0d).intValue();
     }
 }

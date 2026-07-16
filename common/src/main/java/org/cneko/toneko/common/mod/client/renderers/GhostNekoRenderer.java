@@ -17,12 +17,12 @@ public class GhostNekoRenderer extends NekoRenderer<GhostNekoEntity> {
     }
 
     @Override
-    public void actuallyRender(PoseStack poseStack, GhostNekoEntity entity, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+    public void actuallyRender(PoseStack poseStack, GhostNekoEntity entity, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         RenderType translucentRenderType = RenderType.entityTranslucent(getTextureLocation(entity));
         VertexConsumer translucentBuffer = bufferSource.getBuffer(translucentRenderType);
 
         // 调用父类进行实际渲染
-        super.actuallyRender(poseStack, entity, model, translucentRenderType, bufferSource, translucentBuffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.actuallyRender(poseStack, entity, model, translucentRenderType, bufferSource, translucentBuffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
 

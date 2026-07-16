@@ -8,7 +8,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 import static org.cneko.toneko.common.mod.advencements.ToNekoCriteria.*;
 public class ToNekoCriteriaFabric {
     public static void init(){
-        NEKO_LV100 = CriteriaTriggers.register(MODID+"/neko_lv100", new NekoLevelTrigger());
-        GIFT_NEKO = CriteriaTriggers.register(MODID+"/gift_neko", new GiftNekoTrigger());
+        NEKO_LV100 = CriteriaTriggers.register(new NekoLevelTrigger());
+        GIFT_NEKO = CriteriaTriggers.register(new GiftNekoTrigger());
     }
 }

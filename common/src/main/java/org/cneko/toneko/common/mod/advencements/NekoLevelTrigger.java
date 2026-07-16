@@ -1,40 +1,41 @@
 package org.cneko.toneko.common.mod.advencements;
 
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
+import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import org.cneko.toneko.common.mod.entities.INeko;
 
-import java.util.Optional;
+import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public class NekoLevelTrigger extends SimpleCriterionTrigger<NekoLevelTrigger.TriggerInstance> {
+    private static final ResourceLocation ID = new ResourceLocation(MODID, "neko_lv100");
 
-    @Override
-    public @NotNull Codec<TriggerInstance> codec() {
-        return TriggerInstance.CODEC;
+    public ResourceLocation getId() { return ID; }
+
+    protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext context) {
+        return new TriggerInstance(player, json.get("level").getAsDouble());
     }
 
     public void trigger(ServerPlayer player) {
-        trigger(player, triggerInstance -> triggerInstance.matches(player.getNekoLevel()));
+        trigger(player, triggerInstance -> triggerInstance.matches(((INeko) player).getNekoLevel()));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, double level) implements SimpleCriterionTrigger.SimpleInstance {
-
-        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-                Codec.DOUBLE.fieldOf("level").forGetter(TriggerInstance::level)
-        ).apply(instance, TriggerInstance::new));
-
-        public boolean matches(double level) {
-            return level >= this.level;
+    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
+        private final double level;
+        public TriggerInstance(ContextAwarePredicate player, double level) {
+            super(ID, player);
+            this.level = level;
         }
-
-        public static Criterion<TriggerInstance> hasLevel(double level) {
-            return ToNekoCriteria.NEKO_LV100.createCriterion(new TriggerInstance(Optional.empty(), level));
+        public boolean matches(double value) { return value >= this.level; }
+        public static TriggerInstance hasLevel(double level) { return new TriggerInstance(ContextAwarePredicate.ANY, level); }
+        public JsonObject serializeToJson(net.minecraft.advancements.critereon.SerializationContext context) {
+            JsonObject json = super.serializeToJson(context);
+            json.addProperty("level", level);
+            return json;
         }
     }
 }

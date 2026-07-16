@@ -12,7 +12,9 @@ public record GenomeDataPayload(int entityId, CompoundTag genomeNbt, boolean can
         return new GenomeDataPayload(buf.readInt(), buf.readNbt(), buf.readBoolean());
     }
     public void write(FriendlyByteBuf buf) {
-        buf.writeInt(entityId).writeNbt(genomeNbt).writeBoolean(canEdit);
+        buf.writeInt(entityId);
+        buf.writeNbt(genomeNbt);
+        buf.writeBoolean(canEdit);
     }
     public ResourceLocation id() { return ID; }
 }

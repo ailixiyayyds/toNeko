@@ -1,5 +1,7 @@
 package org.cneko.toneko.common.mod.items.ammo;
 
+import net.minecraft.world.level.Level;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.cneko.toneko.common.mod.items.BazookaItem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,8 +20,8 @@ public abstract class AmmoItem extends Item implements BazookaItem.Ammunition {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltips, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltips, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltips, tooltipFlag);
         tooltips.add(Component.translatable("item.toneko.ammo.use_with_bazooka"));
     }
 

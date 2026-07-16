@@ -248,7 +248,7 @@ public class ToNekoNetworkEvents {
 
         // 调整移除任务：在最后一行移动后100tick移除
         if (lines != null && !lines.isEmpty()) {
-            int lastLineLength = lines.getLast().length();
+            int lastLineLength = lines.get(lines.size() - 1).length();
             int lastLineEndTime = cumulativeDelay - gap + lastLineLength;
             int removalTime = lastLineEndTime + 100;
 
@@ -265,7 +265,7 @@ public class ToNekoNetworkEvents {
         TickTaskQueue syncQueue = new TickTaskQueue();
         int syncDuration = 0;
         if (lines != null) {
-            syncDuration = !lines.isEmpty() ? (cumulativeDelay - gap + lines.getLast().length() + 100) : 0;
+            syncDuration = !lines.isEmpty() ? (cumulativeDelay - gap + lines.get(lines.size() - 1).length() + 100) : 0;
         }
         syncQueue.addRepeatingTask(0, syncDuration, () -> {
             double currentBaseX = neko.getX();

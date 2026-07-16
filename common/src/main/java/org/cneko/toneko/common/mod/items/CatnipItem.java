@@ -1,5 +1,7 @@
 package org.cneko.toneko.common.mod.items;
 
+import net.minecraft.world.level.Level;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,10 +15,10 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.cneko.toneko.common.mod.effects.ToNekoEffects;
 import org.cneko.toneko.common.mod.entities.INeko;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,14 +33,14 @@ public class CatnipItem extends Item implements BazookaItem.Ammunition {
         if (foodProperties != null && !livingEntity.level().isClientSide) {
             if (livingEntity instanceof INeko neko && neko.isNeko()){
                 livingEntity.addEffect(new MobEffectInstance(
-                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ToNekoEffects.NEKO_EFFECT),
+                        ToNekoEffects.NEKO_EFFECT,
                         10000,
                         0
                 ));
                 // 恢复一点猫猫能量
                 neko.setNekoEnergy(neko.getNekoEnergy() + 30);
             }
-            return livingEntity.eat(level, stack, foodProperties);
+            return livingEntity.eat(level, stack);
         }
         return stack;
     }
@@ -48,7 +50,7 @@ public class CatnipItem extends Item implements BazookaItem.Ammunition {
         if (!shooter.level().isClientSide) {
             if (target instanceof INeko neko && neko.isNeko()) {
                 target.addEffect(new MobEffectInstance(
-                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ToNekoEffects.NEKO_EFFECT),
+                        ToNekoEffects.NEKO_EFFECT,
                         10000,
                         0
                 ));
@@ -66,7 +68,7 @@ public class CatnipItem extends Item implements BazookaItem.Ammunition {
         // 粒子
         if (!shooter.level().isClientSide) {
             shooter.level().addParticle(
-                    ()-> BuiltInRegistries.PARTICLE_TYPE.wrapAsHolder(ParticleTypes.EFFECT).value(),
+                    ParticleTypes.EFFECT,
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,
@@ -120,8 +122,8 @@ public class CatnipItem extends Item implements BazookaItem.Ammunition {
         }
 
         @Override
-        public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+            super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
             tooltipComponents.add(Component.translatable("item.toneko.infinite_catnip.tip"));
         }
     }

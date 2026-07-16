@@ -1,7 +1,6 @@
 package org.cneko.toneko.common.mod.misc;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -39,9 +38,6 @@ public class ToNekoEnchantments {
      * @param key RegistryKey
      * @param builder Enchantment.Builder
      */
-    public static void register(BootstrapContext<Enchantment> registry, ResourceKey<Enchantment> key, Enchantment.Builder builder) {
-        registry.register(key, builder.build(key.location()));
-    }
 
     /**
      * 获取一个toNeko的Enchantment的RegistryKey

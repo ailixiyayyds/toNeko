@@ -19,8 +19,8 @@ public class AmmunitionRenderer extends GeoEntityRenderer<AmmunitionEntity> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, AmmunitionEntity animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    public void preRender(PoseStack poseStack, AmmunitionEntity animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.scale(0.1f,0.1f,0.1f);
     }
 

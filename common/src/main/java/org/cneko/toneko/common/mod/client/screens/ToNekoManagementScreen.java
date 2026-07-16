@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.cneko.toneko.common.mod.packets.ToNekoActionPayload;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -502,16 +503,16 @@ public class ToNekoManagementScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (activeTab == TAB_OWNED_NEKOS && !ownedNekos.isEmpty()) {
             int maxVisible = (this.height - CONTENT_START_Y - 60) / 85;
             int maxScroll = Math.max(0, ownedNekos.size() - maxVisible);
-            scrollOffset = Math.clamp(scrollOffset - (int) scrollY, 0, maxScroll);
+            scrollOffset = Mth.clamp(scrollOffset - (int) delta, 0, maxScroll);
             clearWidgets();
             init();
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

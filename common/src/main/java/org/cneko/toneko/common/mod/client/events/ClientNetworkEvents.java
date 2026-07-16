@@ -19,6 +19,7 @@ import org.cneko.toneko.common.mod.packets.*;
 import org.cneko.toneko.common.mod.packets.interactives.ChatHistoryResponsePayload;
 import org.cneko.toneko.common.mod.packets.interactives.NekoEntityInteractivePayload;
 import org.cneko.toneko.common.mod.entities.NekoEntity;
+import org.cneko.toneko.common.mod.misc.mixininterface.PlayerLeashAccess;
 import org.cneko.toneko.common.util.AIUtil;
 import org.cneko.toneko.common.util.ConfigUtil;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +59,7 @@ public class ClientNetworkEvents {
             Player target = ClientPlayerUtil.getPlayerByUUID(UUID.fromString(payload.target()));
             // 拴上玩家
             if (target != null && holder != null) {
-                target.setLeashedTo(holder,false);
+                ((PlayerLeashAccess) target).toneko$setLeashedTo(holder, false);
             }
         }));
 
@@ -71,13 +72,12 @@ public class ClientNetworkEvents {
         ToNekoClientNetworking.registerS2C(NekoInfoSyncPayload.ID, NekoInfoSyncPayload::read,(payload,context)-> context.client().execute(()->{
             Player player = context.player();
             player.setNekoEnergy(payload.energy());
-            if (player instanceof org.cneko.toneko.common.mod.entities.INeko neko) {
-                neko.setNeko(payload.isNeko());
-                neko.setNekoLevelFactorRaw("interaction", payload.interactionRaw());
-                neko.setNekoLevelFactorRaw("combat", payload.combatRaw());
-                neko.setNekoLevelFactorRaw("base", payload.baseRaw());
-                neko.setNekoAge(payload.age());
-            }
+            org.cneko.toneko.common.mod.entities.INeko neko = (org.cneko.toneko.common.mod.entities.INeko) player;
+            neko.setNeko(payload.isNeko());
+            neko.setNekoLevelFactorRaw("interaction", payload.interactionRaw());
+            neko.setNekoLevelFactorRaw("combat", payload.combatRaw());
+            neko.setNekoLevelFactorRaw("base", payload.baseRaw());
+            neko.setNekoAge(payload.age());
         }));
 
         ToNekoClientNetworking.registerS2C(OpenPlotScreenPayload.ID, OpenPlotScreenPayload::read,  (payload, context) -> context.client().execute(() -> {

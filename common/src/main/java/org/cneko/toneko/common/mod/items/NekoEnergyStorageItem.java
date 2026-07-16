@@ -1,11 +1,14 @@
 package org.cneko.toneko.common.mod.items;
 
+import net.minecraft.world.level.Level;
+
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,8 +24,8 @@ public class NekoEnergyStorageItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         tooltipComponents.add(Component.translatable("item.toneko.neko_energy_storage.tip.energy_count",energyCapacity));
         if (isCharged) {
             tooltipComponents.add(Component.translatable("item.toneko.neko_energy_storage.tip.charged"));

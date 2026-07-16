@@ -187,7 +187,7 @@ public class GeneticsScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
 
         if (chromosomes.isEmpty()) return;
@@ -298,11 +298,11 @@ public class GeneticsScreen extends Screen {
 
     // ... [mouseScrolled, isPauseScreen, compareNaturally 保持不变] ...
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (mouseX < this.width / 2) {
-            this.leftScrollY = Mth.clamp(this.leftScrollY - scrollY * 20, 0, leftMaxScroll);
+            this.leftScrollY = Mth.clamp(this.leftScrollY - delta * 20, 0, leftMaxScroll);
         } else if (canEdit && editingLocus != null) {
-            this.rightScrollY = Mth.clamp(this.rightScrollY - scrollY * 20, 0, rightMaxScroll);
+            this.rightScrollY = Mth.clamp(this.rightScrollY - delta * 20, 0, rightMaxScroll);
         }
         return true;
     }

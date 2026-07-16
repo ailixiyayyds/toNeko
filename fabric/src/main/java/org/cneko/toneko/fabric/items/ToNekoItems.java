@@ -52,8 +52,10 @@ public class ToNekoItems {
         CATNIP_SANDWICH = new CatnipItem(new Item.Properties()
                 .food(new FoodProperties.Builder().nutrition(10).saturationMod(12f).build()));
         CATNIP_SEED = new ItemNameBlockItem(ToNekoBlocks.CATNIP, new Item.Properties());
-        MUSIC_DISC_KAWAII = new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ToNekoSongs.KAWAII));
-        MUSIC_DISC_NEVER_GONNA_GIVE_YOU_UP = new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ToNekoSongs.NEVER_GONNA_GIVE_YOU_UP));
+        MUSIC_DISC_KAWAII = new RecordItem(10, ToNekoSongs.KAWAII,
+                new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 180);
+        MUSIC_DISC_NEVER_GONNA_GIVE_YOU_UP = new RecordItem(10, ToNekoSongs.NEVER_GONNA_GIVE_YOU_UP,
+                new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 213);
         BAZOOKA = new BazookaItem(new Item.Properties());
         PLOT_SCROLL = new PlotScrollItem(new Item.Properties());
         LIGHTNING_BOMB = new LightningBombItem(new Item.Properties());

@@ -54,7 +54,7 @@ public class NekoInventory implements Container, Nameable {
     }
 
     private boolean hasRemainingSpaceForItem(ItemStack destination, ItemStack origin) {
-        return !destination.isEmpty() && ItemStack.isSameItemSameComponents(destination, origin) && destination.isStackable() && destination.getCount() < this.getMaxStackSize(destination);
+        return !destination.isEmpty() && ItemStack.isSameItemSameTags(destination, origin) && destination.isStackable() && destination.getCount() < this.getMaxStackSize();
     }
 
     public int getFreeSlot() {
@@ -102,7 +102,7 @@ public class NekoInventory implements Container, Nameable {
 
     public int findSlotMatchingItem(ItemStack stack) {
         for(int i = 0; i < this.items.size(); ++i) {
-            if (!this.items.get(i).isEmpty() && ItemStack.isSameItemSameComponents(stack, this.items.get(i))) {
+            if (!this.items.get(i).isEmpty() && ItemStack.isSameItemSameTags(stack, this.items.get(i))) {
                 return i;
             }
         }
@@ -168,7 +168,7 @@ public class NekoInventory implements Container, Nameable {
             this.setItem(slot, itemStack);
         }
 
-        int j = this.getMaxStackSize(itemStack) - itemStack.getCount();
+        int j = this.getMaxStackSize() - itemStack.getCount();
         int k = Math.min(i, j);
         if (k != 0) {
             i -= k;
@@ -215,7 +215,7 @@ public class NekoInventory implements Container, Nameable {
         // 尝试与已有的同类物品进行合并
         for (ItemStack currentStack : this.items) {
             // 判断槽位中已有物品，并且与待加入物品为同种（包括NBT数据）
-            if (!currentStack.isEmpty() && ItemStack.isSameItemSameComponents(currentStack, stack)) {
+            if (!currentStack.isEmpty() && ItemStack.isSameItemSameTags(currentStack, stack)) {
                 int maxStackSize = stack.getMaxStackSize();
                 int availableSpace = maxStackSize - currentStack.getCount();
                 if (availableSpace > 0) {
@@ -247,99 +247,26 @@ public class NekoInventory implements Container, Nameable {
     public boolean add(int slot, ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
+        }
+
+        int originalCount = stack.getCount();
+        if (!stack.isDamaged()) {
+            do {
+                int previousCount = stack.getCount();
+                stack.setCount(slot == -1 ? this.addResource(stack) : this.addResource(slot, stack));
+                if (stack.getCount() >= previousCount) {
+                    break;
+                }
+            } while (!stack.isEmpty());
         } else {
-            Throwable throwable;
-            CrashReport crashReport;
-            CrashReportCategory crashReportCategory;
-            int i;
-            label81: {
-                try {
-                    if (!stack.isDamaged()) {
-                        do {
-                            i = stack.getCount();
-                            if (slot == -1) {
-                                stack.setCount(this.addResource(stack));
-                            } else {
-                                stack.setCount(this.addResource(slot, stack));
-                            }
-                        } while(!stack.isEmpty() && stack.getCount() < i);
-
-                        if (stack.getCount() == i && this.neko.hasInfiniteMaterials()) {
-                            stack.setCount(0);
-                            return true;
-                        }
-                        break label81;
-                    }
-                } catch (Throwable var10) {
-                    throwable = var10;
-                    crashReport = CrashReport.forThrowable(throwable, "Adding item to inventory");
-                    crashReportCategory = crashReport.addCategory("Item being added");
-                    crashReportCategory.setDetail("Item ID", Item.getId(stack.getItem()));
-                    crashReportCategory.setDetail("Item data", stack.getDamageValue());
-                    crashReportCategory.setDetail("Item name", () -> stack.getHoverName().getString());
-                    throw new ReportedException(crashReport);
-                }
-
-                try {
-                    if (slot == -1) {
-                        slot = this.getFreeSlot();
-                    }
-
-                    if (slot >= 0) {
-                        this.items.set(slot, stack.copyAndClear());
-                        this.items.get(slot).setPopTime(5);
-                        return true;
-                    }
-                } catch (Throwable var9) {
-                    throwable = var9;
-                    crashReport = CrashReport.forThrowable(throwable, "Adding item to inventory");
-                    crashReportCategory = crashReport.addCategory("Item being added");
-                    crashReportCategory.setDetail("Item ID", Item.getId(stack.getItem()));
-                    crashReportCategory.setDetail("Item data", stack.getDamageValue());
-                    crashReportCategory.setDetail("Item name", () -> stack.getHoverName().getString());
-                    throw new ReportedException(crashReport);
-                }
-
-                try {
-                    if (this.neko.hasInfiniteMaterials()) {
-                        stack.setCount(0);
-                        return true;
-                    }
-                } catch (Throwable var8) {
-                    throwable = var8;
-                    crashReport = CrashReport.forThrowable(throwable, "Adding item to inventory");
-                    crashReportCategory = crashReport.addCategory("Item being added");
-                    crashReportCategory.setDetail("Item ID", Item.getId(stack.getItem()));
-                    crashReportCategory.setDetail("Item data", stack.getDamageValue());
-                    crashReportCategory.setDetail("Item name", () -> stack.getHoverName().getString());
-                    throw new ReportedException(crashReport);
-                }
-
-                try {
-                    return false;
-                } catch (Throwable var7) {
-                    throwable = var7;
-                    crashReport = CrashReport.forThrowable(throwable, "Adding item to inventory");
-                    crashReportCategory = crashReport.addCategory("Item being added");
-                    crashReportCategory.setDetail("Item ID", Item.getId(stack.getItem()));
-                    crashReportCategory.setDetail("Item data", stack.getDamageValue());
-                    crashReportCategory.setDetail("Item name", () -> stack.getHoverName().getString());
-                    throw new ReportedException(crashReport);
-                }
-            }
-
-            try {
-                return stack.getCount() < i;
-            } catch (Throwable var6) {
-                throwable = var6;
-                crashReport = CrashReport.forThrowable(throwable, "Adding item to inventory");
-                crashReportCategory = crashReport.addCategory("Item being added");
-                crashReportCategory.setDetail("Item ID", Item.getId(stack.getItem()));
-                crashReportCategory.setDetail("Item data", stack.getDamageValue());
-                crashReportCategory.setDetail("Item name", () -> stack.getHoverName().getString());
-                throw new ReportedException(crashReport);
+            int targetSlot = slot == -1 ? this.getFreeSlot() : slot;
+            if (targetSlot >= 0) {
+                this.items.set(targetSlot, stack.copyAndClear());
+                this.items.get(targetSlot).setPopTime(5);
+                return true;
             }
         }
+        return stack.getCount() < originalCount;
     }
 
 
@@ -431,7 +358,7 @@ public class NekoInventory implements Container, Nameable {
             if (!this.items.get(i).isEmpty()) {
                 compoundTag = new CompoundTag();
                 compoundTag.putByte("Slot", (byte)i);
-                listTag.add(this.items.get(i).save(this.neko.registryAccess(), compoundTag));
+                listTag.add(this.items.get(i).save(compoundTag));
             }
         }
 
@@ -439,7 +366,7 @@ public class NekoInventory implements Container, Nameable {
             if (!this.armor.get(i).isEmpty()) {
                 compoundTag = new CompoundTag();
                 compoundTag.putByte("Slot", (byte)(i + 100));
-                listTag.add(this.armor.get(i).save(this.neko.registryAccess(), compoundTag));
+                listTag.add(this.armor.get(i).save(compoundTag));
             }
         }
 
@@ -447,7 +374,7 @@ public class NekoInventory implements Container, Nameable {
             if (!this.offhand.get(i).isEmpty()) {
                 compoundTag = new CompoundTag();
                 compoundTag.putByte("Slot", (byte)(i + 150));
-                listTag.add(this.offhand.get(i).save(this.neko.registryAccess(), compoundTag));
+                listTag.add(this.offhand.get(i).save(compoundTag));
             }
         }
 
@@ -462,7 +389,7 @@ public class NekoInventory implements Container, Nameable {
         for(int i = 0; i < listTag.size(); ++i) {
             CompoundTag compoundTag = listTag.getCompound(i);
             int j = compoundTag.getByte("Slot") & 255;
-            ItemStack itemStack = ItemStack.parse(this.neko.registryAccess(), compoundTag).orElse(ItemStack.EMPTY);
+            ItemStack itemStack = ItemStack.of(compoundTag);
             //noinspection ConstantValue
             if (j >= 0 && j < this.items.size()) {
                 this.items.set(j, itemStack);
@@ -562,7 +489,7 @@ public class NekoInventory implements Container, Nameable {
     }
 
     public boolean stillValid(Player player) {
-        return player.canInteractWithEntity(this.neko, 4.0);
+        return this.neko.isAlive() && player.distanceToSqr(this.neko) <= 64.0;
     }
 
     public boolean contains(ItemStack stack) {
@@ -570,7 +497,7 @@ public class NekoInventory implements Container, Nameable {
         for (NonNullList<ItemStack> compartment : this.compartments) {
 
             for (ItemStack itemStack : compartment) {
-                if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(itemStack, stack)) {
+                if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stack)) {
                     return true;
                 }
             }

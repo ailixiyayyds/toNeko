@@ -275,22 +275,24 @@ public interface INeko {
 
         // 年龄缩放: 幼年 0.3 → 成年 1.0
         applyModifier(
-                this.getEntity().getAttribute(Attributes.SCALE),
+                this.getEntity().getAttribute(ToNekoAttributes.SCALE),
                 AGE_SCALE_MODIFIER_ID,
                 this.getNekoAgeScale() - 1.0,
-                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                AttributeModifier.Operation.MULTIPLY_TOTAL
         );
     }
 
     static void applyModifier(AttributeInstance attr, ResourceLocation id, double bonus) {
-        applyModifier(attr, id, bonus, AttributeModifier.Operation.ADD_VALUE);
+        applyModifier(attr, id, bonus, AttributeModifier.Operation.ADDITION);
     }
 
     static void applyModifier(AttributeInstance attr, ResourceLocation id, double bonus, AttributeModifier.Operation operation) {
         if (attr != null) {
-            attr.removeModifier(id);
+            java.util.UUID uuid = java.util.UUID.nameUUIDFromBytes(id.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            attr.removeModifier(uuid);
             AttributeModifier modifier = new AttributeModifier(
-                    id,
+                    uuid,
+                    id.toString(),
                     bonus,
                     operation
             );

@@ -1,6 +1,5 @@
 package org.cneko.toneko.common.mod.items;
 
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -87,8 +86,4 @@ public class ContractItem extends Item {
         return 30;
     }
 
-    @Override
-    public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
-        return enchantment.is(ToNekoEnchantments.ENFORCEMENT);
-    }
 }

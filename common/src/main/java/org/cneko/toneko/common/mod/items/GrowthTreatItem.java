@@ -36,7 +36,7 @@ public class GrowthTreatItem extends Item {
                     }
                 }
             }
-            return livingEntity.eat(level, stack, foodProperties);
+            return livingEntity.eat(level, stack);
         }
         return stack;
     }

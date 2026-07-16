@@ -12,9 +12,8 @@ public class CommonWorldEvent {
         var players = serverLevel.players();
         for (var player : players){
             for (var quirk: player.getQuirks()){
-                if (quirk instanceof ModQuirk mq){
-                    mq.onWeatherChange(player,serverLevel,clearTime,weatherTime,isRaining,isThundering);
-                }
+                ModQuirk mq = quirk;
+                mq.onWeatherChange(player,serverLevel,clearTime,weatherTime,isRaining,isThundering);
             }
         }
     }

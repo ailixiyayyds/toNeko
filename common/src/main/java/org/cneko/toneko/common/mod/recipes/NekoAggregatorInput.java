@@ -2,13 +2,14 @@ package org.cneko.toneko.common.mod.recipes;
 
 import lombok.Getter;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeInput;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NekoAggregatorInput implements RecipeInput {
+public class NekoAggregatorInput implements Container {
     public static final NekoAggregatorInput EMPTY = new NekoAggregatorInput(0, 0, List.of(),0);
     private final int width;
     private final int height;
@@ -102,6 +103,27 @@ public class NekoAggregatorInput implements RecipeInput {
         return this.items.size();
     }
 
+    @Override
+    public int getContainerSize() { return size(); }
+
+    @Override
+    public ItemStack removeItem(int slot, int amount) { return ItemStack.EMPTY; }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) { return ItemStack.EMPTY; }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) { this.items.set(slot, stack); }
+
+    @Override
+    public void setChanged() { }
+
+    @Override
+    public boolean stillValid(Player player) { return true; }
+
+    @Override
+    public void clearContent() { this.items.clear(); }
+
     public boolean isEmpty() {
         return this.ingredientCount == 0;
     }
@@ -132,12 +154,27 @@ public class NekoAggregatorInput implements RecipeInput {
         } else if (!(object instanceof NekoAggregatorInput craftingInput)) {
             return false;
         } else {
-            return this.width == craftingInput.width && this.height == craftingInput.height && this.ingredientCount == craftingInput.ingredientCount && ItemStack.listMatches(this.items, craftingInput.items);
+            if (this.width != craftingInput.width || this.height != craftingInput.height || this.ingredientCount != craftingInput.ingredientCount || this.items.size() != craftingInput.items.size()) {
+                return false;
+            }
+            for (int i = 0; i < this.items.size(); i++) {
+                ItemStack left = this.items.get(i);
+                ItemStack right = craftingInput.items.get(i);
+                if (left.getCount() != right.getCount() || !ItemStack.isSameItemSameTags(left, right)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
     public int hashCode() {
-        int i = ItemStack.hashStackList(this.items);
+        int i = 1;
+        for (ItemStack stack : this.items) {
+            i = 31 * i + net.minecraft.world.item.Item.getId(stack.getItem());
+            i = 31 * i + stack.getCount();
+            i = 31 * i + java.util.Objects.hashCode(stack.getTag());
+        }
         i = 31 * i + this.width;
         i = 31 * i + this.height;
         return i;

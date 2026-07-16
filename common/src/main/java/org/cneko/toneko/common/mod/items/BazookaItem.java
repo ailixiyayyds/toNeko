@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.items;
 
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
+import net.minecraft.world.level.Level;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.cneko.toneko.common.mod.entities.AmmunitionEntity;
 import org.cneko.toneko.common.mod.entities.ToNekoEntities;
@@ -43,8 +43,8 @@ public class BazookaItem extends Item {
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltips, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltips, tooltipFlag);
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltips, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltips, tooltipFlag);
         Ammunition ammo = getAmmunition(stack);
         if (ammo instanceof Item ammoItem) {
             // 弹药类型显示
@@ -143,7 +143,7 @@ public class BazookaItem extends Item {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+    public int getUseDuration(@NotNull ItemStack stack) {
         return 0;
     }
 
@@ -210,14 +210,6 @@ public class BazookaItem extends Item {
 
 
     @Override
-    public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
-        if (enchantment.is(Enchantments.LOYALTY) || enchantment.is(Enchantments.POWER)){
-            return true;
-        }
-        return super.canBeEnchantedWith(stack, enchantment, context);
-    }
-
-    @Override
     public boolean isEnchantable(@NotNull ItemStack stack) {
         return true; // 允许被附魔
     }
@@ -248,7 +240,7 @@ public class BazookaItem extends Item {
     public static float getAttackDamage(ItemStack bazooka,ItemStack ammunition,Level level){
         float base = 4;
         float finalDamage = base;
-        int powerLevel = EnchantmentUtil.getEnchantmentLevel(Enchantments.POWER, bazooka,level);
+        int powerLevel = EnchantmentUtil.getEnchantmentLevel(Enchantments.POWER_ARROWS, bazooka,level);
         finalDamage += base*0.25f*powerLevel + 0.5f*powerLevel;
         return finalDamage;
     }

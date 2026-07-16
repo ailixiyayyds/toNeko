@@ -16,7 +16,7 @@ public class TextUtil {
         return Component.translatable(key);
     }
     public static String getPlayerName(Player player){
-        String playerName = player.getName().getString();
+        String playerName = ((net.minecraft.world.entity.Entity) player).getScoreboardName();
         playerName = playerName.replace("literal{", "").replace("}", "");
         return playerName;
     }

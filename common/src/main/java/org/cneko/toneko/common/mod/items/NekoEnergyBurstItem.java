@@ -1,7 +1,8 @@
 package org.cneko.toneko.common.mod.items;
 
+import net.minecraft.world.level.Level;
+
 import lombok.Getter;
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.cneko.toneko.common.mod.entities.INeko;
@@ -36,6 +37,7 @@ import org.cneko.toneko.common.mod.misc.ToNekoDamageTypes;
 import org.cneko.toneko.common.mod.misc.ToNekoEnchantments;
 import org.cneko.toneko.common.mod.util.EnchantmentUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -180,9 +182,9 @@ public class NekoEnergyBurstItem extends Item {
                         healCount.incrementAndGet();
                         // 爱心粒子
                         for (int i = 0; i < 10; i++) {
-                            double offsetX = (entity.getRandom().nextDouble() - 0.5) * entity.getBbWidth();
-                            double offsetY = entity.getRandom().nextDouble() * entity.getBbHeight();
-                            double offsetZ = (entity.getRandom().nextDouble() - 0.5) * entity.getBbWidth();
+                            double offsetX = (entity.level().getRandom().nextDouble() - 0.5) * entity.getBbWidth();
+                            double offsetY = entity.level().getRandom().nextDouble() * entity.getBbHeight();
+                            double offsetZ = (entity.level().getRandom().nextDouble() - 0.5) * entity.getBbWidth();
                             entity.level().addParticle(ParticleTypes.HEART,
                                 entity.getX() + offsetX, entity.getY() + offsetY, entity.getZ() + offsetZ,
                                 0, 0.1, 0);
@@ -190,10 +192,10 @@ public class NekoEnergyBurstItem extends Item {
                     } else {
                         // ---- 原版附魔伤害加成 ----
                         float vanillaBonus = sharpnessBonus;
-                        if (smiteLevel > 0 && livingEntity.getType().is(EntityTypeTags.SENSITIVE_TO_SMITE)) {
+                        if (smiteLevel > 0 && livingEntity.getMobType() == net.minecraft.world.entity.MobType.UNDEAD) {
                             vanillaBonus += 2.5f * smiteLevel;
                         }
-                        if (baneLevel > 0 && livingEntity.getType().is(EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS)) {
+                        if (baneLevel > 0 && livingEntity.getMobType() == net.minecraft.world.entity.MobType.ARTHROPOD) {
                             vanillaBonus += 2.5f * baneLevel;
                         }
 
@@ -215,7 +217,7 @@ public class NekoEnergyBurstItem extends Item {
                         if (livingEntity instanceof Mob mob) {
                             int duration = 60 + comboBonusLevel * 40; // 基础3秒 + combo加成
                             mob.addEffect(new MobEffectInstance(
-                                BuiltInRegistries.MOB_EFFECT.wrapAsHolder(HISS_INTIMIDATION_EFFECT), duration, 0));
+                                HISS_INTIMIDATION_EFFECT, duration, 0));
 
                             if (hissRootLevel > 0) {
                                 // 定身哈气：取消击退，改为强效缓慢（钉在原地）
@@ -236,9 +238,9 @@ public class NekoEnergyBurstItem extends Item {
 
                         // 受伤粒子
                         for (int i = 0; i < 10; i++) {
-                            double offsetX = (entity.getRandom().nextDouble() - 0.5) * entity.getBbWidth();
-                            double offsetY = entity.getRandom().nextDouble() * entity.getBbHeight();
-                            double offsetZ = (entity.getRandom().nextDouble() - 0.5) * entity.getBbWidth();
+                            double offsetX = (entity.level().getRandom().nextDouble() - 0.5) * entity.getBbWidth();
+                            double offsetY = entity.level().getRandom().nextDouble() * entity.getBbHeight();
+                            double offsetZ = (entity.level().getRandom().nextDouble() - 0.5) * entity.getBbWidth();
                             entity.level().addParticle(ParticleTypes.DAMAGE_INDICATOR,
                                 entity.getX() + offsetX, entity.getY() + offsetY, entity.getZ() + offsetZ,
                                 0, 0.1, 0);
@@ -315,8 +317,7 @@ public class NekoEnergyBurstItem extends Item {
         broadcastHissMessage(player, finalHits, healCount.get(), firstTargetName.get(), newCombo, isEasterEgg);
 
         // ---- 消耗耐久 ----
-        player.getItemInHand(usedHand).hurtAndBreak(1, player,
-            usedHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        player.getItemInHand(usedHand).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(usedHand));
 
         // ---- 冷却 ----
         player.getCooldowns().addCooldown(this, 10);
@@ -763,7 +764,7 @@ public class NekoEnergyBurstItem extends Item {
             } else {
                 // 更新进度条
                 float progress = (float) remaining / combo.totalWindowMs;
-                combo.bossBar.setProgress(Math.clamp(progress, 0.0f, 1.0f));
+                combo.bossBar.setProgress(Mth.clamp(progress, 0.0f, 1.0f));
 
                 // 每 10 tick 更新一次标题中的时间显示
                 if (server.getTickCount() % 10 == 0) {
@@ -786,36 +787,13 @@ public class NekoEnergyBurstItem extends Item {
         return 15; // 中等附魔能力
     }
 
-    @Override
-    public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
-        // 猫能爆哈器专属附魔
-        if (enchantment.is(ToNekoEnchantments.HISS_POWER)
-            || enchantment.is(ToNekoEnchantments.HISS_SPREAD)
-            || enchantment.is(ToNekoEnchantments.HISS_EFFICIENCY)
-            || enchantment.is(ToNekoEnchantments.COMBO_EXTEND)
-            || enchantment.is(ToNekoEnchantments.HISS_ROOT)
-            || enchantment.is(ToNekoEnchantments.HISS_DEMOLISH)) {
-            return true;
-        }
-        // 原版剑类附魔
-        if (enchantment.is(Enchantments.SHARPNESS)
-            || enchantment.is(Enchantments.SMITE)
-            || enchantment.is(Enchantments.BANE_OF_ARTHROPODS)
-            || enchantment.is(Enchantments.FIRE_ASPECT)
-            || enchantment.is(Enchantments.KNOCKBACK)) {
-            return true;
-        }
-        // 通用附魔（耐久、经验修补等由 super 处理）
-        return super.canBeEnchantedWith(stack, enchantment, context);
-    }
-
     // ========================
     //  Tooltip
     // ========================
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level,
                                  @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         tooltipComponents.add(Component.translatable(getBroadcastKeyPrefix() + ".tip.flavor"));
         tooltipComponents.add(Component.translatable(getBroadcastKeyPrefix() + ".tip"));
         tooltipComponents.add(Component.translatable(getBroadcastKeyPrefix() + ".tip.damage", damage));

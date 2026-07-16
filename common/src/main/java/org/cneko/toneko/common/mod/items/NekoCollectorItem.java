@@ -1,5 +1,7 @@
 package org.cneko.toneko.common.mod.items;
 
+import net.minecraft.world.level.Level;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -8,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.cneko.toneko.common.mod.codecs.CountCodecs;
 import org.cneko.toneko.common.mod.entities.INeko;

@@ -155,7 +155,7 @@ public class AIConfigScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics g, int mx, int my, float pt) {
-        renderBackground(g, mx, my, pt);
+        renderBackground(g);
         g.drawCenteredString(font, getTitle(), width / 2, 12, COLOR_ACCENT);
         // Provider indicator
         if (!providers.isEmpty()) {
@@ -170,7 +170,7 @@ public class AIConfigScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics g, int mx, int my, float pt) {
+    public void renderBackground(@NotNull GuiGraphics g) {
         g.fill(0, 0, width, height, 0xC0100510);
     }
 
@@ -218,8 +218,8 @@ public class AIConfigScreen extends Screen {
         }
 
         @Override
-        public boolean mouseScrolled(double mx, double my, double dx, double dy) {
-            scrollAmount = Mth.clamp(scrollAmount - dy * 12, 0, Math.max(0, contentHeight() - h));
+        public boolean mouseScrolled(double mx, double my, double delta) {
+            scrollAmount = Mth.clamp(scrollAmount - delta * 12, 0, Math.max(0, contentHeight() - h));
             return true;
         }
 

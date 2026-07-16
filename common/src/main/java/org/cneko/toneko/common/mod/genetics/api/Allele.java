@@ -47,7 +47,7 @@ public class Allele {
     /**
      * 声明一个属性修饰符，多个相同的基因如果处于不同的基因座，修饰符会自动叠加！
      */
-    public Allele addAttributeModifier(Holder<Attribute> attribute, String modifierNameSuffix, double amount, AttributeModifier.Operation operation) {
+    public Allele addAttributeModifier(Attribute attribute, String modifierNameSuffix, double amount, AttributeModifier.Operation operation) {
         this.modifierTemplates.add(new ModifierTemplate(attribute, modifierNameSuffix, amount, operation));
         return this;
     }
@@ -74,9 +74,10 @@ public class Allele {
             AttributeInstance instance = entity.getAttribute(template.attribute);
             if (instance != null) {
                 ResourceLocation modifierId = getDynamicModifierId(locus.id(), template.suffix);
+                java.util.UUID modifierUuid = java.util.UUID.nameUUIDFromBytes(modifierId.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
                 // 确保先清除旧的，防止因为数值更新导致的崩溃
-                instance.removeModifier(modifierId);
-                instance.addPermanentModifier(new AttributeModifier(modifierId, template.amount, template.operation));
+                instance.removeModifier(modifierUuid);
+                instance.addPermanentModifier(new AttributeModifier(modifierUuid, modifierId.toString(), template.amount, template.operation));
             }
         }
 
@@ -102,7 +103,8 @@ public class Allele {
             AttributeInstance instance = entity.getAttribute(template.attribute);
             if (instance != null) {
                 ResourceLocation modifierId = getDynamicModifierId(locus.id(), template.suffix);
-                instance.removeModifier(modifierId);
+                java.util.UUID modifierUuid = java.util.UUID.nameUUIDFromBytes(modifierId.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                instance.removeModifier(modifierUuid);
             }
         }
     }
@@ -113,6 +115,6 @@ public class Allele {
                 "genetic_" + locusId.getPath() + "_" + suffix);
     }
 
-    private record ModifierTemplate(Holder<Attribute> attribute, String suffix, double amount, AttributeModifier.Operation operation) {}
+    private record ModifierTemplate(Attribute attribute, String suffix, double amount, AttributeModifier.Operation operation) {}
     public record PrioritizedGoal(int priority, Goal goal) {}
 }

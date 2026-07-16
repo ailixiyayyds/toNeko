@@ -245,11 +245,11 @@ public class NoelleMaidNekoEntity extends NekoEntity {
     // 同步数据定义
     // ============================================================
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(STAGE_ID, Stage.MEOW.name());
-        builder.define(TRAUMA_ID, 0);
-        builder.define(CARE_SCORE_ID, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(STAGE_ID, Stage.MEOW.name());
+        this.entityData.define(TRAUMA_ID, 0);
+        this.entityData.define(CARE_SCORE_ID, 0);
     }
 
     // ============================================================
@@ -1253,7 +1253,7 @@ public class NoelleMaidNekoEntity extends NekoEntity {
         this.removeEffect(MobEffects.DAMAGE_BOOST);
         var atkAttr = this.getAttribute(Attributes.ATTACK_DAMAGE);
         if (atkAttr != null) {
-            atkAttr.removeModifier(HATRED_ATTACK_BOOST_ID);
+            atkAttr.removeModifier(HATRED_ATTACK_BOOST_UUID);
         }
     }
 

@@ -69,8 +69,8 @@ public class AmmunitionEntity extends ThrowableProjectile implements GeoEntity {
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.put("Bazooka", getBazookaStack().save(this.registryAccess()));
-        tag.put("Ammunition", getAmmunitionStack().save(this.registryAccess()));
+        tag.put("Bazooka", getBazookaStack().save(new CompoundTag()));
+        tag.put("Ammunition", getAmmunitionStack().save(new CompoundTag()));
         tag.putDouble("InitialX", initialPosition.x);
         tag.putDouble("InitialY", initialPosition.y);
         tag.putDouble("InitialZ", initialPosition.z);
@@ -79,8 +79,8 @@ public class AmmunitionEntity extends ThrowableProjectile implements GeoEntity {
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        setBazookaStack(ItemStack.parseOptional(registryAccess(),tag.getCompound("Bazooka")));
-        setAmmunitionStack(ItemStack.parseOptional(registryAccess(),tag.getCompound("Ammunition")));
+        setBazookaStack(ItemStack.of(tag.getCompound("Bazooka")));
+        setAmmunitionStack(ItemStack.of(tag.getCompound("Ammunition")));
         this.initialPosition = new Vec3(
                 tag.getDouble("InitialX"),
                 tag.getDouble("InitialY"),

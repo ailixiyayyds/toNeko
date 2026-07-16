@@ -8,18 +8,32 @@ This repository is a public, community-maintained backport of the original
 - Target: Minecraft 1.20.1 with Fabric
 - Upstream baseline: `V1.9.0` (`21790e31c6073bb941e6af1f0f2ecfa3c06ead2e`)
 - Development branch: `1.20.1-backport`
-- Status: early porting; Gradle dependency resolution is working, but source
-  compilation is still blocked by 1.21-only component/network/recipe APIs.
+- Status: the common and Fabric source sets compile on Java 17, and the
+  remapped Fabric JAR builds successfully. In-game smoke testing and behavioral
+  verification are the next milestone.
 - API reference: upstream tag `V1.3.9-1.20` is an actual Minecraft 1.20.1
   codebase and is used as a compatibility reference; it is not treated as the
   1.9.0 feature baseline.
 - Relationship to upstream: unofficial; issues specific to this backport belong in this fork
 
-The initial milestone is a Fabric client and dedicated server that build and
-start on Java 17. NeoForge support is outside the first milestone.
+The initial build milestone is complete. The next milestone is a Fabric client
+and dedicated server that start cleanly on Java 17. NeoForge support is outside
+the first milestone.
 
-The migration is being done in API groups (network payloads, entity data,
-recipes, then client rendering) so the newer 1.9 feature set is preserved.
+Ported API groups include network payloads, synced entity data, recipes,
+advancements, attributes, item NBT, GeckoLib rendering, screens, Fabric entity
+registration, data generation, and optional EMI/Trinkets integration.
+
+Current compatibility notes:
+
+- The 1.21-only fall-damage, burning-time, and gravity attributes have no
+  vanilla 1.20.1 equivalents; their allele entries remain registered but their
+  attribute modifiers are temporarily inactive.
+- Player leash state is implemented through a 1.20.1 compatibility interface;
+  movement/visual parity still requires in-game verification.
+- Trinkets items register and render, while their 1.21-era extra attribute and
+  slot modifiers are temporarily omitted pending runtime testing against the
+  1.20.1 Trinkets API.
 
 ## License and attribution
 

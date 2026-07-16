@@ -197,10 +197,10 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(PET_MODE, false);
-        builder.define(AFFECTION_ID, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(PET_MODE, false);
+        this.entityData.define(AFFECTION_ID, 0);
     }
 
     // ============================================================
@@ -574,11 +574,11 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
             }
             // 清除所有正面buff
             List<MobEffect> toRemove = this.getActiveEffects().stream()
-                    .filter(e -> e.getEffect().value().isBeneficial() && e.getEffect() != MobEffects.WEAKNESS)
-                    .map(e -> e.getEffect().value())
+                    .filter(e -> e.getEffect().isBeneficial() && e.getEffect() != MobEffects.WEAKNESS)
+                    .map(MobEffectInstance::getEffect)
                     .toList();
             for (MobEffect mobEffect : toRemove) {
-                removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect));
+                removeEffect(mobEffect);
             }
 
             despairTicks++;
@@ -624,11 +624,11 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
         this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10 * 20, 2)); // 10秒，60%减伤
         // 清除debuff
         List<MobEffect> toRemove = this.getActiveEffects().stream()
-                .filter(e -> !e.getEffect().value().isBeneficial() && e.getEffect() != MobEffects.WEAKNESS)
-                .map(e -> e.getEffect().value())
+                .filter(e -> !e.getEffect().isBeneficial() && e.getEffect() != MobEffects.WEAKNESS)
+                .map(MobEffectInstance::getEffect)
                 .toList();
         for (MobEffect mobEffect : toRemove) {
-            removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect));
+            removeEffect(mobEffect);
         }
     }
 
@@ -640,7 +640,7 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
         bossEvent.removeAllPlayers();
         // 给予周围玩家魅惑效果
         this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(16))
-                .forEach(p -> p.addEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ToNekoEffects.BEWITCHED_EFFECT), 20 * 20, 0, true, false)));
+                .forEach(p -> p.addEffect(new MobEffectInstance(ToNekoEffects.BEWITCHED_EFFECT, 20 * 20, 0, true, false)));
         this.sendSkillMessage("charm", this.getName().getString());
     }
 
@@ -864,7 +864,7 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
         // 属性变化
         this.setHealth(40.0f);
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0);
-        this.getAttribute(Attributes.SCALE).setBaseValue(1.5);
+        this.getAttribute(ToNekoAttributes.SCALE).setBaseValue(1.5);
         this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.12);
         org.cneko.toneko.common.mod.api.NekoLevelRegistry.base().setRaw(this, 0);
 
@@ -925,9 +925,9 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
                 .add(Attributes.ARMOR, 10) // 护甲值
                 .add(Attributes.ATTACK_DAMAGE, 10) // 攻击伤害
                 .add(Attributes.MOVEMENT_SPEED, 0.11) // 移动速度
-                .add(Attributes.SCALE, 2.0) // 体型大小
+                .add(ToNekoAttributes.SCALE, 2.0) // 体型大小
                 .add(ToNekoAttributes.MAX_NEKO_ENERGY,5000) // 最大能量
-                .add(Attributes.SAFE_FALL_DISTANCE,50); // 安全落地距离
+                ;
 
     }
 }

@@ -33,7 +33,7 @@ public class AdventurerNeko extends NekoEntity{
 
     @Override
     public boolean isFavoriteItem(ItemStack stack) {
-        return super.isFavoriteItem(stack) || stack.is(ItemTags.SWORDS) || stack.is(ItemTags.CHEST_ARMOR) || stack.is(ItemTags.HEAD_ARMOR) || stack.is(ItemTags.LEG_ARMOR) || stack.is(ItemTags.FOOT_ARMOR);
+        return super.isFavoriteItem(stack) || stack.is(ItemTags.SWORDS) || stack.getItem() instanceof net.minecraft.world.item.ArmorItem;
     }
 
     @Override

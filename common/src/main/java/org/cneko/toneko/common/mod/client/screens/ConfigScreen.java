@@ -308,9 +308,9 @@ public class ConfigScreen extends Screen {
         }
 
         @Override
-        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
             if (getContentHeight() > height) {
-                setScrollAmount(scrollAmount - scrollY * 20);
+                setScrollAmount(scrollAmount - delta * 20);
                 return true;
             }
             return false;
@@ -458,7 +458,7 @@ public class ConfigScreen extends Screen {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             // 1. 检查是否点击了链接
             if (url != null && isMouseOverLabel(mouseX, mouseY)) {
-                ConfirmLinkScreen.confirmLinkNow(Minecraft.getInstance().screen, url);
+                ConfirmLinkScreen.confirmLinkNow(url, Minecraft.getInstance().screen, true);
                 return true;
             }
 

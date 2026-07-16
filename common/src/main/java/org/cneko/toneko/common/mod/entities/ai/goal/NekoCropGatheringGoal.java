@@ -290,7 +290,7 @@ public class NekoCropGatheringGoal extends Goal {
                     for (int slot = 0; slot < chest.getContainerSize(); slot++) {
                         ItemStack chestStack = chest.getItem(slot);
                         // 判断箱子里该槽位是否有物品，并且是否与要存入的物品相同（包括NBT数据）
-                        if (!chestStack.isEmpty() && ItemStack.isSameItemSameComponents(chestStack, depositStack)) {
+                        if (!chestStack.isEmpty() && ItemStack.isSameItemSameTags(chestStack, depositStack)) {
                             int maxStack = depositStack.getMaxStackSize(); // 最大堆叠数量
                             int availableSpace = maxStack - chestStack.getCount();
                             if (availableSpace > 0) {

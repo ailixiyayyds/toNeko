@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +31,7 @@ public class NekoAggregatorBlock extends Block {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
@@ -85,9 +84,9 @@ public class NekoAggregatorBlock extends Block {
                     // 当玩家从这个槽取出物品时（无论是拖动还是Shift-点击），此方法被调用
                     access.execute((level, blockPos) -> {
                         // 查找匹配的配方
-                        Optional<RecipeHolder<NekoAggregatorRecipe>> recipeOptional = findMatchingRecipe(level);
+                        Optional<NekoAggregatorRecipe> recipeOptional = findMatchingRecipe(level);
                         if (recipeOptional.isPresent()) {
-                            NekoAggregatorRecipe recipe = recipeOptional.get().value();
+                            NekoAggregatorRecipe recipe = recipeOptional.get();
                             // 检查能量（再次检查以防万一）
                             if (player.getNekoEnergy() >= recipe.energy) {
                                 // 消耗原料和能量
@@ -138,11 +137,11 @@ public class NekoAggregatorBlock extends Block {
             NekoAggregatorInput recipeInput = NekoAggregatorInput.of(3, 3, inputs, 0); // 这里的 energy 只是占位符
 
             // 查找配方
-            Optional<RecipeHolder<NekoAggregatorRecipe>> recipeHolder = level.getRecipeManager()
+            Optional<NekoAggregatorRecipe> recipeHolder = level.getRecipeManager()
                     .getRecipeFor(ToNekoRecipes.NEKO_AGGREGATOR, recipeInput, level);
 
             if (recipeHolder.isPresent()) {
-                NekoAggregatorRecipe recipe = recipeHolder.get().value();
+                NekoAggregatorRecipe recipe = recipeHolder.get();
                 // 检查能量是否足够
                 if (this.player.getNekoEnergy() >= recipe.energy) {
                     // 合成并设置结果
@@ -175,8 +174,8 @@ public class NekoAggregatorBlock extends Block {
                 // 当从输出槽 Shift-点击时
                 if (index == 9) {
                     // 1. 检查条件 (这部分是好的，保留)
-                    Optional<RecipeHolder<NekoAggregatorRecipe>> recipeOptional = this.findMatchingRecipe(player.level());
-                    if (recipeOptional.isEmpty() || player.getNekoEnergy() < recipeOptional.get().value().energy) {
+                    Optional<NekoAggregatorRecipe> recipeOptional = this.findMatchingRecipe(player.level());
+                    if (recipeOptional.isEmpty() || player.getNekoEnergy() < recipeOptional.get().energy) {
                         return ItemStack.EMPTY; // 如果不满足条件，阻止移动
                     }
 
@@ -226,7 +225,7 @@ public class NekoAggregatorBlock extends Block {
             }
         }
 
-        private Optional<RecipeHolder<NekoAggregatorRecipe>> findMatchingRecipe(Level level) {
+        private Optional<NekoAggregatorRecipe> findMatchingRecipe(Level level) {
             if (level == null) return Optional.empty();
 
             List<ItemStack> inputs = new ArrayList<>();

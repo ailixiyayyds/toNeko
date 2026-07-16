@@ -21,7 +21,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import org.cneko.toneko.common.mod.api.NekoLevelRegistry;
 import org.cneko.toneko.common.mod.api.events.WorldEvents;
@@ -66,7 +66,7 @@ public class ToNekoEvents {
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER,
                 1,
                 (factories) -> factories.add((trader, random) -> new MerchantOffer(
-                        new ItemCost(Items.EMERALD, 2),
+                        new ItemStack(Items.EMERALD, 2),
                         ToNekoItems.CATNIP_SEED.getDefaultInstance(),
                         10,
                         10,
@@ -85,9 +85,8 @@ public class ToNekoEvents {
             player.fixQuirks();
             String name = TextUtil.getPlayerName(player);
             for (Quirk quirk : player.getQuirks()){
-                if (quirk instanceof ModQuirk mq){
-                    mq.onJoin(player);
-                }
+                ModQuirk mq = quirk;
+                mq.onJoin(player);
             }
         }
     }

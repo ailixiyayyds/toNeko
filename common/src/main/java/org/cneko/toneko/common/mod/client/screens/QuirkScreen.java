@@ -90,7 +90,7 @@ public class QuirkScreen extends Screen{
     public void onClose() {
         Minecraft.getInstance().setScreen(lastScreen);
         // 向服务器发送quirk
-        ClientPlayNetworking.getSender().sendPacket(new QuirkQueryPayload(quirks,allQuirks,true));
+        org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking.send(new QuirkQueryPayload(quirks, allQuirks, true));
     }
 
 

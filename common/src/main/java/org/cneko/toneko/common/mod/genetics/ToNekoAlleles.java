@@ -1,7 +1,9 @@
 package org.cneko.toneko.common.mod.genetics;
 
 import net.minecraft.world.entity.PathfinderMob;
+import org.cneko.toneko.common.mod.misc.ToNekoAttributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import org.cneko.toneko.common.mod.misc.ToNekoAttributes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.cneko.toneko.common.mod.entities.ai.goal.MobNightActiveGoal;
@@ -17,40 +19,37 @@ public class ToNekoAlleles {
     public static final Allele WILD_TYPE = new Allele(toNekoLoc("wild_type"), 10, null, null);
     // 慢速基因，减0.03移速
     public static final Allele SLOW_SPEED = new Allele(toNekoLoc("slow_speed"), 20, null, null)
-            .addAttributeModifier(Attributes.MOVEMENT_SPEED,"speed_boost",-0.03, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.MOVEMENT_SPEED,"speed_boost",-0.03, AttributeModifier.Operation.ADDITION);
     // 超速基因，加0.03移速
     public static final Allele SUPER_SPEED = new Allele(toNekoLoc("super_speed"), 20, null, null)
-            .addAttributeModifier(Attributes.MOVEMENT_SPEED,"speed_boost",0.03, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.MOVEMENT_SPEED,"speed_boost",0.03, AttributeModifier.Operation.ADDITION);
     // 大力基因，加3攻击力
     public static final Allele STRONG_ATTACK = new Allele(toNekoLoc("strong_attack"), 20, null, null)
-            .addAttributeModifier(Attributes.ATTACK_DAMAGE,"attack_boost",3, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.ATTACK_DAMAGE,"attack_boost",3, AttributeModifier.Operation.ADDITION);
     // 敏捷基因，加3攻击速度
     public static final Allele FAST_ATTACK = new Allele(toNekoLoc("fast_attack"), 20, null, null)
-            .addAttributeModifier(Attributes.ATTACK_SPEED,"attack_boost",3, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.ATTACK_SPEED,"attack_boost",3, AttributeModifier.Operation.ADDITION);
     // 大体型基因，+0.3体型
     public static final Allele LARGE_BODY = new Allele(toNekoLoc("large_body"), 5, null, null)
-            .addAttributeModifier(Attributes.SCALE,"body_size_boost",0.3, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(ToNekoAttributes.SCALE,"body_size_boost",0.3, AttributeModifier.Operation.ADDITION);
     // 小体型基因，-0.3体型
     public static final Allele SMALL_BODY = new Allele(toNekoLoc("small_body"), 20, null, null)
-            .addAttributeModifier(Attributes.SCALE,"body_size_boost",-0.3, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(ToNekoAttributes.SCALE,"body_size_boost",-0.3, AttributeModifier.Operation.ADDITION);
     // 健康基因，增加5最大生命
     public static final Allele HEALTHY = new Allele(toNekoLoc("healthy"), 20, null, null)
-            .addAttributeModifier(Attributes.MAX_HEALTH,"health_boost",5, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.MAX_HEALTH,"health_boost",5, AttributeModifier.Operation.ADDITION);
     // 虚弱基因，减少5最大生命
     public static final Allele WEAK = new Allele(toNekoLoc("weak"), 20, null, null)
-            .addAttributeModifier(Attributes.MAX_HEALTH,"health_boost",-5, AttributeModifier.Operation.ADD_VALUE);
+            .addAttributeModifier(Attributes.MAX_HEALTH,"health_boost",-5, AttributeModifier.Operation.ADDITION);
 
     // 摔落抗性基因，减少50%摔落伤害（稀有）
-    public static final Allele FALL_RESISTANCE = new Allele(toNekoLoc("fall_resistance"), 5, null, null)
-            .addAttributeModifier(Attributes.FALL_DAMAGE_MULTIPLIER, "fall_resistance", -0.5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    public static final Allele FALL_RESISTANCE = new Allele(toNekoLoc("fall_resistance"), 5, null, null);
 
     // 火焰抗性基因，减少50%燃烧时间（稀有）
-    public static final Allele FIRE_RESISTANCE = new Allele(toNekoLoc("fire_resistance"), 5, null, null)
-            .addAttributeModifier(Attributes.BURNING_TIME, "fire_resistance", -0.5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    public static final Allele FIRE_RESISTANCE = new Allele(toNekoLoc("fire_resistance"), 5, null, null);
 
     // 重力敏感基因，增加20%重力（负面稀有基因）
-    public static final Allele GRAVITY_SENSITIVE = new Allele(toNekoLoc("gravity_sensitive"), 15, null, null)
-            .addAttributeModifier(Attributes.GRAVITY, "gravity_boost", 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    public static final Allele GRAVITY_SENSITIVE = new Allele(toNekoLoc("gravity_sensitive"), 15, null, null);
 
     // 贫乳基因，胸部缩放为0（平坦）
     public static final Allele FLAT_CHEST = new Allele(toNekoLoc("flat_chest"), 15,

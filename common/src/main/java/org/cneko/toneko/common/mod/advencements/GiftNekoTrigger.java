@@ -1,33 +1,28 @@
 package org.cneko.toneko.common.mod.advencements;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
+import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.Optional;
+import static org.cneko.toneko.common.Bootstrap.MODID;
 
-public class GiftNekoTrigger extends SimpleCriterionTrigger<GiftNekoTrigger.TriggerInstance>{
+public class GiftNekoTrigger extends SimpleCriterionTrigger<GiftNekoTrigger.TriggerInstance> {
+    private static final ResourceLocation ID = new ResourceLocation(MODID, "gift_neko");
 
-    @Override
-    public Codec<TriggerInstance> codec() {
-        return TriggerInstance.CODEC;
+    public ResourceLocation getId() { return ID; }
+
+    protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext context) {
+        return new TriggerInstance(player);
     }
 
-    public void trigger(ServerPlayer player) {
-        this.trigger(player, instance -> true);
-    }
+    public void trigger(ServerPlayer player) { this.trigger(player, instance -> true); }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player))
-                .apply(instance, GiftNekoTrigger.TriggerInstance::new)
-        );
-
-        public static Criterion<TriggerInstance> create() {
-            return ToNekoCriteria.GIFT_NEKO.createCriterion(new GiftNekoTrigger.TriggerInstance(Optional.empty()));
-        }
+    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
+        public TriggerInstance(ContextAwarePredicate player) { super(ID, player); }
+        public static TriggerInstance create() { return new TriggerInstance(ContextAwarePredicate.ANY); }
     }
 }

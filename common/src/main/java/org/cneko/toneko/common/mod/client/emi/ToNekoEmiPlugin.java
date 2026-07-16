@@ -9,7 +9,6 @@ import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.cneko.toneko.common.mod.blocks.NekoAggregatorBlock;
 import org.cneko.toneko.common.mod.items.ToNekoItems;
@@ -41,8 +40,10 @@ public class ToNekoEmiPlugin implements EmiPlugin {
 
         // 3. 获取 RecipeManager 并添加所有配方
         RecipeManager manager = registry.getRecipeManager();
-        for (RecipeHolder<NekoAggregatorRecipe> holder : manager.getAllRecipesFor(ToNekoRecipes.NEKO_AGGREGATOR)) {
-            registry.addRecipe(new NekoAggregatorEmiRecipe(category, holder));
+        int recipeIndex = 0;
+        for (NekoAggregatorRecipe recipe : manager.getAllRecipesFor(ToNekoRecipes.NEKO_AGGREGATOR)) {
+            registry.addRecipe(new NekoAggregatorEmiRecipe(category,
+                    toNekoLoc("neko_aggregator/" + recipeIndex++), recipe));
         }
 
         // 4. 注册配方处理器

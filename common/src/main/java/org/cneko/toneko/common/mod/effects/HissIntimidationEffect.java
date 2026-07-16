@@ -14,21 +14,22 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 public class HissIntimidationEffect extends MobEffect {
     public static final String ID = "hiss_intimidation";
     public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
+    private static final String MODIFIER_UUID = "0bebc7b5-80ad-42d0-a8dc-e42799ba1df6";
 
     public HissIntimidationEffect() {
         super(MobEffectCategory.HARMFUL, 0xFFFFFF);
         // 哈气威慑：减速 + 降低攻击
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, LOCATION, -0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, LOCATION, -0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MODIFIER_UUID, -0.15, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, MODIFIER_UUID, -0.15, AttributeModifier.Operation.MULTIPLY_BASE);
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         // 60%概率在受影响实体周围冒出白色气雾粒子，模拟"被哈气包围"
         if (entity.level().getRandom().nextFloat() < 0.6f) {
             entity.level().addParticle(
@@ -39,6 +40,6 @@ public class HissIntimidationEffect extends MobEffect {
                 0, 0.02, 0
             );
         }
-        return super.applyEffectTick(entity, amplifier);
+        super.applyEffectTick(entity, amplifier);
     }
 }

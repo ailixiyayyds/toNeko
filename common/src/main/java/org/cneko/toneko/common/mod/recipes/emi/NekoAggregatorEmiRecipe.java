@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.resources.ResourceLocation;
 import org.cneko.toneko.common.mod.recipes.NekoAggregatorRecipe;
 
 import java.util.List;
@@ -23,9 +23,8 @@ public class NekoAggregatorEmiRecipe extends BasicEmiRecipe {
     private static final int COST_COLOR_CONSUME = 0xFFFF5555; // 红色
     private static final int COST_COLOR_GAIN = 0xFF55FF55;    // 绿色
 
-    public NekoAggregatorEmiRecipe(EmiRecipeCategory category, RecipeHolder<NekoAggregatorRecipe> holder) {
-        super(category, holder.id(), 150, 60); // 设置宽度150，高度60
-        NekoAggregatorRecipe recipe = holder.value();
+    public NekoAggregatorEmiRecipe(EmiRecipeCategory category, ResourceLocation id, NekoAggregatorRecipe recipe) {
+        super(category, id, 150, 60);
         this.energy = recipe.energy;
 
         // 设置输入 (假设 Pattern 是标准的 3x3 或者可以通过 list 获取)

@@ -19,8 +19,8 @@
   ],
   "contact": {
     "website": "https://github.com/CSNeko/toNeko",
-    "repo": "https://github.com/CSNeko/toNeko",
-    "issues": "https://github.com/CSNeko/toNeko/issues",
+    "repo": "https://github.com/ailixiyayyds/toNeko/tree/1.20.1-backport",
+    "issues": "https://github.com/ailixiyayyds/toNeko/issues",
     "homepage": "https://github.com/CSNeko/toNeko"
   },
   "license": "GPL-v3",
@@ -56,11 +56,6 @@
   "mixins": [
     "toneko.mixins.json",
     "fabric.toneko.mixins.json"
-  ],
-  "jars": [
-    {
-      "file": "META-INF/jars/ctLibMod-0.1.12.jar"
-    }
   ],
   "custom": {
     "modmenu": {

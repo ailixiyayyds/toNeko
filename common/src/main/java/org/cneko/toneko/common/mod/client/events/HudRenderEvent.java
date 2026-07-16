@@ -33,7 +33,7 @@ public class HudRenderEvent {
             if (player == null) return;
             renderNekoEnergyBar(guiGraphics);
             // 检查玩家是否有魅惑效果
-            if (player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ToNekoEffects.BEWITCHED_EFFECT))) {
+            if (player.hasEffect(ToNekoEffects.BEWITCHED_EFFECT)) {
                 renderBewitchedOverlay(guiGraphics,player);
             }
             // 玩家被骑乘时显示提示
@@ -65,7 +65,8 @@ public class HudRenderEvent {
 
         // --- 顶点数据准备 ---
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder bufferBuilder = tesselator.getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         // 定义颜色和透明度
         int r = 255, g = 105, b = 180; // 靓粉色
@@ -82,35 +83,35 @@ public class HudRenderEvent {
         // 颜色将从边缘（有alpha）渐变到内部（alpha为0）
 
         // 顶部四边形
-        bufferBuilder.addVertex(0, innerY1, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(width, innerY1, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(width, 0, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(0, 0, z).setColor(r, g, b, edgeAlpha);
+        bufferBuilder.vertex(0, innerY1, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(width, innerY1, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(width, 0, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(0, 0, z).color(r, g, b, edgeAlpha).endVertex();
 
         // 底部四边形
-        bufferBuilder.addVertex(0, height, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(width, height, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(width, innerY2, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(0, innerY2, z).setColor(r, g, b, 0);
+        bufferBuilder.vertex(0, height, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(width, height, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(width, innerY2, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(0, innerY2, z).color(r, g, b, 0).endVertex();
 
         // 左侧四边形（高度覆盖整个屏幕）
-        bufferBuilder.addVertex(0, height, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(innerX1, height, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(innerX1, 0, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(0, 0, z).setColor(r, g, b, edgeAlpha);
+        bufferBuilder.vertex(0, height, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(innerX1, height, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(innerX1, 0, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(0, 0, z).color(r, g, b, edgeAlpha).endVertex();
 
         // 右侧四边形（高度覆盖整个屏幕）
-        bufferBuilder.addVertex(innerX2, height, z).setColor(r, g, b, 0);
-        bufferBuilder.addVertex(width, height, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(width, 0, z).setColor(r, g, b, edgeAlpha);
-        bufferBuilder.addVertex(innerX2, 0, z).setColor(r, g, b, 0);
+        bufferBuilder.vertex(innerX2, height, z).color(r, g, b, 0).endVertex();
+        bufferBuilder.vertex(width, height, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(width, 0, z).color(r, g, b, edgeAlpha).endVertex();
+        bufferBuilder.vertex(innerX2, 0, z).color(r, g, b, 0).endVertex();
 
         // --- 绘制 ---
         // 构建网格数据并使用着色器进行绘制
-        MeshData mesh = bufferBuilder.build();
-        if (mesh != null) {
+        tesselator.end();
+        if (false) {
             // BufferUploader会处理VBO上传和绘制调用
-            BufferUploader.drawWithShader(mesh);
+            // Drawing is completed by Tesselator#end on Minecraft 1.20.1.
         }
 
         // --- 恢复渲染状态 ---

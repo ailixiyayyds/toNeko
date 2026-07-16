@@ -12,7 +12,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +22,7 @@ import org.cneko.toneko.common.mod.api.EntityPoseManager;
 import org.cneko.toneko.common.mod.api.NekoLevelRegistry;
 import org.cneko.toneko.common.mod.entities.INeko;
 import org.cneko.toneko.common.mod.misc.mixininterface.SlowTickable;
+import org.cneko.toneko.common.mod.misc.mixininterface.PlayerLeashAccess;
 import org.cneko.toneko.common.mod.packets.EntityPosePayload;
 import org.cneko.toneko.common.mod.packets.NekoInfoSyncPayload;
 import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
@@ -42,7 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.*;
 
 @Mixin(Player.class)
-public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickable {
+public abstract class PlayerEntityMixin implements INeko, PlayerLeashAccess, SlowTickable {
 
     @Shadow private boolean reducedDebugInfo;
 
@@ -71,7 +71,7 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
     short toneko$tick = 20;
 
     @Unique
-    private LeashData leashData;
+    private Entity toneko$leashHolder;
     @Override
     public LivingEntity getEntity() {
         return (Player)(Object) this;
@@ -82,21 +82,25 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
         return true;
     }
 
-    @Nullable
     @Override
-    public LeashData getLeashData() {
-        return leashData;
+    public boolean toneko$isLeashed() {
+        return toneko$leashHolder != null && !toneko$leashHolder.isRemoved();
     }
 
     @Override
-    public void setLeashData(@Nullable Leashable.LeashData leashData) {
-        this.leashData = leashData;
+    public void toneko$setLeashedTo(Entity holder, boolean broadcastPacket) {
+        this.toneko$leashHolder = holder;
+    }
+
+    @Override
+    public void toneko$dropLeash(boolean broadcastPacket, boolean dropLead) {
+        this.toneko$leashHolder = null;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
         Player player = (Player)(Object)this;
-        Leashable.tickLeash(player);
+        if (toneko$leashHolder != null && toneko$leashHolder.isRemoved()) toneko$leashHolder = null;
         if (toneko$tick++>=20) {
             toneko$slowTick();
             toneko$tick = 0;
@@ -235,9 +239,9 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
         Player player = (Player)(Object)this;
         if(source.getEntity() instanceof Player holder){
             ItemStack stack = holder.getMainHandItem();
-            if (stack.is(Items.LEAD) && !player.isLeashed()){
+            if (stack.is(Items.LEAD) && !toneko$isLeashed()){
                 // 栓住玩家
-                player.setLeashedTo(holder, true);
+                toneko$setLeashedTo(holder, true);
                 // 减少栓绳
                 holder.getMainHandItem().setCount(holder.getMainHandItem().getCount() - 1);
                 // 在服务端运行的话呢同时发给客户端

@@ -113,9 +113,9 @@ public class RouletteScreen extends Screen implements ClientMusicPlayer.NotePlay
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         clientMusicPlayer.tryPlayNextNote(this);
-        navigate(deltaY > 0 ? -1 : 1);
+        navigate(delta > 0 ? -1 : 1);
         return true;
     }
 
@@ -150,7 +150,7 @@ public class RouletteScreen extends Screen implements ClientMusicPlayer.NotePlay
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics guiGraphics) {
     }
 
     public interface IRouletteAction {

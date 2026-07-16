@@ -1,247 +1,118 @@
 package org.cneko.toneko.common.mod.recipes;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.chars.CharArraySet;
-import it.unimi.dsi.fastutil.chars.CharSet;
-import net.minecraft.Util;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 
-public class NekoAggregatorRecipePattern {
-    private static final int MAX_SIZE = 3;
-    public static final MapCodec<NekoAggregatorRecipePattern> MAP_CODEC;
-    public static final StreamCodec<RegistryFriendlyByteBuf, NekoAggregatorRecipePattern> STREAM_CODEC;
+public final class NekoAggregatorRecipePattern {
     private final int width;
     private final int height;
     private final NonNullList<Ingredient> ingredients;
-    private final Optional<NekoAggregatorRecipePattern.Data> data;
     private final int ingredientCount;
-    private final boolean symmetrical;
 
-    public NekoAggregatorRecipePattern(int width, int height, NonNullList<Ingredient> ingredients, Optional<NekoAggregatorRecipePattern.Data> data) {
+    public NekoAggregatorRecipePattern(int width, int height, NonNullList<Ingredient> ingredients) {
         this.width = width;
         this.height = height;
         this.ingredients = ingredients;
-        this.data = data;
-        int i = 0;
+        int count = 0;
+        for (Ingredient ingredient : ingredients) if (!ingredient.isEmpty()) count++;
+        this.ingredientCount = count;
+    }
 
-        for(Ingredient ingredient : ingredients) {
-            if (!ingredient.isEmpty()) {
-                ++i;
+    public static NekoAggregatorRecipePattern fromJson(JsonObject json) {
+        Map<Character, Ingredient> keys = new HashMap<>();
+        JsonObject keyJson = GsonHelper.getAsJsonObject(json, "key");
+        for (Map.Entry<String, JsonElement> entry : keyJson.entrySet()) {
+            if (entry.getKey().length() != 1 || " ".equals(entry.getKey())) {
+                throw new IllegalArgumentException("Invalid recipe key: " + entry.getKey());
+            }
+            keys.put(entry.getKey().charAt(0), Ingredient.fromJson(entry.getValue()));
+        }
+
+        JsonArray patternJson = GsonHelper.getAsJsonArray(json, "pattern");
+        List<String> rows = new ArrayList<>();
+        for (JsonElement row : patternJson) rows.add(row.getAsString());
+        String[] pattern = shrink(rows);
+        if (pattern.length == 0) throw new IllegalArgumentException("Empty recipe pattern");
+        int width = pattern[0].length();
+        if (width > 3 || pattern.length > 3) throw new IllegalArgumentException("Recipe pattern is larger than 3x3");
+
+        NonNullList<Ingredient> ingredients = NonNullList.withSize(width * pattern.length, Ingredient.EMPTY);
+        for (int y = 0; y < pattern.length; y++) {
+            if (pattern[y].length() != width) throw new IllegalArgumentException("Recipe rows must have equal width");
+            for (int x = 0; x < width; x++) {
+                char symbol = pattern[y].charAt(x);
+                Ingredient ingredient = symbol == ' ' ? Ingredient.EMPTY : keys.get(symbol);
+                if (ingredient == null) throw new IllegalArgumentException("Undefined recipe symbol: " + symbol);
+                ingredients.set(x + y * width, ingredient);
             }
         }
-
-        this.ingredientCount = i;
-        this.symmetrical = Util.isSymmetrical(width, height, ingredients);
+        return new NekoAggregatorRecipePattern(width, pattern.length, ingredients);
     }
 
-    public static NekoAggregatorRecipePattern of(Map<Character, Ingredient> key, String... pattern) {
-        return of(key, List.of(pattern));
-    }
-
-    public static NekoAggregatorRecipePattern of(Map<Character, Ingredient> key, List<String> pattern) {
-        NekoAggregatorRecipePattern.Data data = new NekoAggregatorRecipePattern.Data(key, pattern);
-        return (NekoAggregatorRecipePattern)unpack(data).getOrThrow();
-    }
-
-    private static DataResult<NekoAggregatorRecipePattern> unpack(NekoAggregatorRecipePattern.Data data) {
-        String[] strings = shrink(data.pattern);
-        int i = strings[0].length();
-        int j = strings.length;
-        NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
-        CharSet charSet = new CharArraySet(data.key.keySet());
-
-        for(int k = 0; k < strings.length; ++k) {
-            String string = strings[k];
-
-            for(int l = 0; l < string.length(); ++l) {
-                char c = string.charAt(l);
-                Ingredient ingredient = c == ' ' ? Ingredient.EMPTY : (Ingredient)data.key.get(c);
-                if (ingredient == null) {
-                    return DataResult.error(() -> "Pattern references symbol '" + c + "' but it's not defined in the key");
-                }
-
-                charSet.remove(c);
-                nonNullList.set(l + i * k, ingredient);
+    private static String[] shrink(List<String> rows) {
+        int minColumn = Integer.MAX_VALUE;
+        int maxColumn = -1;
+        int firstRow = 0;
+        int lastRow = rows.size() - 1;
+        while (firstRow <= lastRow && rows.get(firstRow).trim().isEmpty()) firstRow++;
+        while (lastRow >= firstRow && rows.get(lastRow).trim().isEmpty()) lastRow--;
+        for (int row = firstRow; row <= lastRow; row++) {
+            String value = rows.get(row);
+            int first = 0;
+            while (first < value.length() && value.charAt(first) == ' ') first++;
+            int last = value.length() - 1;
+            while (last >= 0 && value.charAt(last) == ' ') last--;
+            if (last >= first) {
+                minColumn = Math.min(minColumn, first);
+                maxColumn = Math.max(maxColumn, last);
             }
         }
-
-        if (!charSet.isEmpty()) {
-            return DataResult.error(() -> "Key defines symbols that aren't used in pattern: " + String.valueOf(charSet));
-        } else {
-            return DataResult.success(new NekoAggregatorRecipePattern(i, j, nonNullList, Optional.of(data)));
-        }
-    }
-
-    @VisibleForTesting
-    static String[] shrink(List<String> pattern) {
-        int i = Integer.MAX_VALUE;
-        int j = 0;
-        int k = 0;
-        int l = 0;
-
-        for(int m = 0; m < pattern.size(); ++m) {
-            String string = (String)pattern.get(m);
-            i = Math.min(i, firstNonSpace(string));
-            int n = lastNonSpace(string);
-            j = Math.max(j, n);
-            if (n < 0) {
-                if (k == m) {
-                    ++k;
-                }
-
-                ++l;
-            } else {
-                l = 0;
-            }
-        }
-
-        if (pattern.size() == l) {
-            return new String[0];
-        } else {
-            String[] strings = new String[pattern.size() - l - k];
-
-            for(int o = 0; o < strings.length; ++o) {
-                strings[o] = ((String)pattern.get(o + k)).substring(i, j + 1);
-            }
-
-            return strings;
-        }
-    }
-
-    private static int firstNonSpace(String row) {
-        int i;
-        for(i = 0; i < row.length() && row.charAt(i) == ' '; ++i) {
-        }
-
-        return i;
-    }
-
-    private static int lastNonSpace(String row) {
-        int i;
-        for(i = row.length() - 1; i >= 0 && row.charAt(i) == ' '; --i) {
-        }
-
-        return i;
+        if (maxColumn < minColumn) return new String[0];
+        String[] result = new String[lastRow - firstRow + 1];
+        for (int i = 0; i < result.length; i++) result[i] = rows.get(firstRow + i).substring(minColumn, maxColumn + 1);
+        return result;
     }
 
     public boolean matches(NekoAggregatorInput input) {
-        if (input.ingredientCount() == this.ingredientCount) {
-            if (input.width() == this.width && input.height() == this.height) {
-                if (!this.symmetrical && this.matches(input, true)) {
-                    return true;
-                }
-
-                return this.matches(input, false);
-            }
-
-        }
-        return false;
+        if (input.ingredientCount() != ingredientCount || input.width() != width || input.height() != height) return false;
+        return matches(input, false) || matches(input, true);
     }
 
-    private boolean matches(NekoAggregatorInput input, boolean symmetrical) {
-        for(int i = 0; i < this.height; ++i) {
-            for(int j = 0; j < this.width; ++j) {
-                Ingredient ingredient;
-                if (symmetrical) {
-                    ingredient = this.ingredients.get(this.width - j - 1 + i * this.width);
-                } else {
-                    ingredient = this.ingredients.get(j + i * this.width);
-                }
-
-                ItemStack itemStack = input.getItem(j, i);
-                if (!ingredient.test(itemStack)) {
-                    return false;
-                }
+    private boolean matches(NekoAggregatorInput input, boolean mirrored) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int patternX = mirrored ? width - x - 1 : x;
+                if (!ingredients.get(patternX + y * width).test(input.getItem(x, y))) return false;
             }
         }
-
         return true;
     }
 
-    private void toNetwork(RegistryFriendlyByteBuf buffer) {
-        buffer.writeVarInt(this.width);
-        buffer.writeVarInt(this.height);
-
-        for(Ingredient ingredient : this.ingredients) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
-        }
-
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeVarInt(width).writeVarInt(height);
+        for (Ingredient ingredient : ingredients) ingredient.toNetwork(buffer);
     }
 
-    private static NekoAggregatorRecipePattern fromNetwork(RegistryFriendlyByteBuf buffer) {
-        int i = buffer.readVarInt();
-        int j = buffer.readVarInt();
-        NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
-        nonNullList.replaceAll((ingredient) -> (Ingredient)Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-        return new NekoAggregatorRecipePattern(i, j, nonNullList, Optional.empty());
+    public static NekoAggregatorRecipePattern fromNetwork(FriendlyByteBuf buffer) {
+        int width = buffer.readVarInt();
+        int height = buffer.readVarInt();
+        NonNullList<Ingredient> ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY);
+        for (int i = 0; i < ingredients.size(); i++) ingredients.set(i, Ingredient.fromNetwork(buffer));
+        return new NekoAggregatorRecipePattern(width, height, ingredients);
     }
 
-    public int width() {
-        return this.width;
-    }
-
-    public int height() {
-        return this.height;
-    }
-
-    public NonNullList<Ingredient> ingredients() {
-        return this.ingredients;
-    }
-
-    static {
-        MAP_CODEC = NekoAggregatorRecipePattern.Data.MAP_CODEC.flatXmap(NekoAggregatorRecipePattern::unpack, (shapedRecipePattern) -> (DataResult)shapedRecipePattern.data.map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Cannot encode unpacked recipe")));
-        STREAM_CODEC = StreamCodec.ofMember(NekoAggregatorRecipePattern::toNetwork, NekoAggregatorRecipePattern::fromNetwork);
-    }
-
-    public static record Data(Map<Character, Ingredient> key, List<String> pattern) {
-        private static final Codec<List<String>> PATTERN_CODEC;
-        private static final Codec<Character> SYMBOL_CODEC;
-        public static final MapCodec<NekoAggregatorRecipePattern.Data> MAP_CODEC;
-
-        static {
-            PATTERN_CODEC = Codec.STRING.listOf().comapFlatMap((list) -> {
-                if (list.size() > 3) {
-                    return DataResult.error(() -> "Invalid pattern: too many rows, 3 is maximum");
-                } else if (list.isEmpty()) {
-                    return DataResult.error(() -> "Invalid pattern: empty pattern not allowed");
-                } else {
-                    int i = ((String)list.getFirst()).length();
-
-                    for(String string : list) {
-                        if (string.length() > 3) {
-                            return DataResult.error(() -> "Invalid pattern: too many columns, 3 is maximum");
-                        }
-
-                        if (i != string.length()) {
-                            return DataResult.error(() -> "Invalid pattern: each row must be the same width");
-                        }
-                    }
-
-                    return DataResult.success(list);
-                }
-            }, Function.identity());
-            SYMBOL_CODEC = Codec.STRING.comapFlatMap((string) -> {
-                if (string.length() != 1) {
-                    return DataResult.error(() -> "Invalid key entry: '" + string + "' is an invalid symbol (must be 1 character only).");
-                } else {
-                    return " ".equals(string) ? DataResult.error(() -> "Invalid key entry: ' ' is a reserved symbol.") : DataResult.success(string.charAt(0));
-                }
-            }, String::valueOf);
-            MAP_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(ExtraCodecs.strictUnboundedMap(SYMBOL_CODEC, Ingredient.CODEC_NONEMPTY).fieldOf("key").forGetter((data) -> data.key), PATTERN_CODEC.fieldOf("pattern").forGetter((data) -> data.pattern)).apply(instance, NekoAggregatorRecipePattern.Data::new));
-        }
-    }
+    public int width() { return width; }
+    public int height() { return height; }
+    public NonNullList<Ingredient> ingredients() { return ingredients; }
 }

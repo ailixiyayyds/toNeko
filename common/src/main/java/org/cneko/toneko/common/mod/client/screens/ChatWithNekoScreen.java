@@ -101,9 +101,9 @@ public class ChatWithNekoScreen extends Screen implements INekoScreen {
     }
 
     @Override
-    public boolean mouseScrolled(double mx, double my, double dx, double dy) {
+    public boolean mouseScrolled(double mx, double my, double delta) {
         double maxScroll = Math.max(0, contentHeight - (height - 105));
-        scrollAmount = Mth.clamp(scrollAmount - dy * 10, 0, maxScroll);
+        scrollAmount = Mth.clamp(scrollAmount - delta * 10, 0, maxScroll);
         return true;
     }
 
@@ -196,5 +196,5 @@ public class ChatWithNekoScreen extends Screen implements INekoScreen {
     @Override public boolean isPauseScreen() { return false; }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics g, int mx, int my, float pt) {}
+    public void renderBackground(@NotNull GuiGraphics g) {}
 }
