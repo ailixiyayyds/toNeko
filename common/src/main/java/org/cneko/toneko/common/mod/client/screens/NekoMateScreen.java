@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -52,7 +53,7 @@ public class NekoMateScreen extends Screen implements INekoScreen {
             int x = (this.width / 3); // 一排显示3个按钮
             x = x*count + ( x - buttonWidth) / 2;
             Button button = Button.builder(entity.getEntity().getName(),(btn)->{
-                ClientPlayNetworking.send(new NekoMatePayload(neko.getUUID().toString(), entity.getEntity().getUUID().toString()));
+                ToNekoClientNetworking.send(new NekoMatePayload(neko.getUUID().toString(), entity.getEntity().getUUID().toString()));
                 onClose();
             }).bounds(x, y, buttonWidth, buttonHeight).build();
             addRenderableWidget(button);

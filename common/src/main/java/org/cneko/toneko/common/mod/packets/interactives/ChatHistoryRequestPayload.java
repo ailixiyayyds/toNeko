@@ -1,22 +1,14 @@
 package org.cneko.toneko.common.mod.packets.interactives;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.cneko.toneko.common.mod.packets.ToNekoPayload;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-/**
- * C2S: Client requests chat history for a specific neko.
- */
-public record ChatHistoryRequestPayload(String nekoUuid) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ChatHistoryRequestPayload> ID =
-            new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "chat_history_request"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChatHistoryRequestPayload> CODEC =
-            StreamCodec.composite(ByteBufCodecs.STRING_UTF8, ChatHistoryRequestPayload::nekoUuid, ChatHistoryRequestPayload::new);
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() { return ID; }
+public record ChatHistoryRequestPayload(String nekoUuid) implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "chat_history_request");
+    public static ChatHistoryRequestPayload read(FriendlyByteBuf buf) { return new ChatHistoryRequestPayload(buf.readUtf()); }
+    public void write(FriendlyByteBuf buf) { buf.writeUtf(nekoUuid); }
+    public ResourceLocation id() { return ID; }
 }

@@ -1,21 +1,13 @@
 package org.cneko.toneko.common.mod.packets;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-public record TTSSendPayload(String text) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<TTSSendPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "tts_send"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, TTSSendPayload> CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, TTSSendPayload::text,
-            TTSSendPayload::new
-    );
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return ID;
-    }
+public record TTSSendPayload(String text) implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "tts_send");
+    public static TTSSendPayload read(FriendlyByteBuf buf) { return new TTSSendPayload(buf.readUtf(32767)); }
+    public void write(FriendlyByteBuf buf) { buf.writeUtf(text, 32767); }
+    public ResourceLocation id() { return ID; }
 }

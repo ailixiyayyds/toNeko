@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.items;
+package org.cneko.toneko.common.mod.items;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.cneko.toneko.common.mod.packets.OpenPlotScreenPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class PlotScrollItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
         if (player instanceof ServerPlayer sp){
-            ServerPlayNetworking.send(sp, new OpenPlotScreenPayload());
+            ToNekoNetworking.send(sp, new OpenPlotScreenPayload());
         }
         return super.use(level, player, usedHand);
     }

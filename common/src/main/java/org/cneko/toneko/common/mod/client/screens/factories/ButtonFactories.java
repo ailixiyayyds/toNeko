@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens.factories;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -41,7 +42,7 @@ public class ButtonFactories {
         ItemStack stack = Minecraft.getInstance().player.getMainHandItem();
         int slot = Minecraft.getInstance().player.getInventory().findSlotMatchingItem(stack);
         if(!stack.isEmpty()){
-            ClientPlayNetworking.send(new GiftItemPayload(screen.getNeko().getUUID().toString(), slot));
+            ToNekoClientNetworking.send(new GiftItemPayload(screen.getNeko().getUUID().toString(), slot));
         }
     });
     public static ButtonFactory ACTION_BUTTON = screen -> Button.builder(Component.translatable("screen.toneko.neko_entity_interactive.button.action"),(btn)->{
@@ -93,7 +94,7 @@ public class ButtonFactories {
     // ---------------------------------------------------- 动作 -----------------------------------------------------------------
     public static ButtonFactory ACTION_FOLLOW_BUTTON = screen -> Button.builder(Component.translatable("screen.toneko.neko_entity_interactive.button.follow"),(btn)->{
         NekoEntity neko = screen.getNeko();
-        ClientPlayNetworking.send(new FollowOwnerPayload(neko.getUUID().toString()));
+        ToNekoClientNetworking.send(new FollowOwnerPayload(neko.getUUID().toString()));
         neko.followOwner(Minecraft.getInstance().player);
     });
     public static ButtonFactory ACTION_RIDE_BUTTON = screen -> Button.builder(Component.translatable("screen.toneko.neko_entity_interactive.button.ride"),(btn)->{
@@ -107,7 +108,7 @@ public class ButtonFactories {
                 neko.startRiding(entity, true);
             }
             // 向服务器发包
-            ClientPlayNetworking.send(new RideEntityPayload(neko.getUUID().toString(),entity.getUUID().toString()));
+            ToNekoClientNetworking.send(new RideEntityPayload(neko.getUUID().toString(),entity.getUUID().toString()));
         }
     });
     public static ButtonFactory ACTION_LIE_BUTTON = screen -> Button.builder(Component.translatable("screen.toneko.neko_entity_interactive.button.lie"),(btn)->{
@@ -119,7 +120,7 @@ public class ButtonFactories {
             ClientEntityPoseManager.remove(neko);
         }
         // 同步到服务端
-        ClientPlayNetworking.send(new NekoPosePayload(Pose.SLEEPING,neko.getUUID().toString()));
+        ToNekoClientNetworking.send(new NekoPosePayload(Pose.SLEEPING,neko.getUUID().toString()));
     });
     public static ButtonFactory ACTION_GET_DOWN_BUTTON = screen -> Button.builder(Component.translatable("screen.toneko.neko_entity_interactive.button.get_down"),(btn)->{
         NekoEntity neko = screen.getNeko();
@@ -130,7 +131,7 @@ public class ButtonFactories {
             ClientEntityPoseManager.remove(neko);
         }
         // 同步到服务端
-        ClientPlayNetworking.send(new NekoPosePayload(Pose.SWIMMING,neko.getUUID().toString()));
+        ToNekoClientNetworking.send(new NekoPosePayload(Pose.SWIMMING,neko.getUUID().toString()));
     });
 
     // ------------------------------------------------------ CrystalNeko ------------------------------------------------------------
@@ -204,7 +205,7 @@ public class ButtonFactories {
         Player player = Minecraft.getInstance().player;
         CrystalNekoEntity neko = (CrystalNekoEntity) screen.getNeko();
         if (player.getUUID().equals(CrystalNekoEntity.CRYSTAL_NEKO_UUID) || player.getName().getString().equalsIgnoreCase(CrystalNekoEntity.NAME)){
-            ClientPlayNetworking.send(new MateWithCrystalNekoPayload(neko.getUUID().toString()));
+            ToNekoClientNetworking.send(new MateWithCrystalNekoPayload(neko.getUUID().toString()));
         }else if(neko.getMoeTags().contains("mesugaki")){
             if (!player.getMainHandItem().is(ToNekoItems.CATNIP)) {
                 // 杂鱼，你还不配和我交配~
@@ -229,7 +230,7 @@ public class ButtonFactories {
         // 客户端本地显示消息（立即反馈）
         neko.nya(Minecraft.getInstance().player);
         // 同步nya计数到服务端
-        ClientPlayNetworking.send(new CrystalNekoNyaPayload(neko.getUUID().toString()));
+        ToNekoClientNetworking.send(new CrystalNekoNyaPayload(neko.getUUID().toString()));
     });
 
     // --------------------------------- 链接 ---------------------------------

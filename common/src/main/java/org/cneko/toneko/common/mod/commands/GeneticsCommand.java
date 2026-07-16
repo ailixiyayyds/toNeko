@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.commands;
+package org.cneko.toneko.common.mod.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import org.cneko.toneko.common.api.Permissions;
 import org.cneko.toneko.common.mod.genetics.api.IGeneticEntity;
 import org.cneko.toneko.common.mod.packets.GenomeDataPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.util.PermissionUtil;
 
 public class GeneticsCommand {
@@ -25,7 +26,7 @@ public class GeneticsCommand {
 
                                         if (target instanceof IGeneticEntity geneticEntity) {
                                             // 发送数据给客户端
-                                            ServerPlayNetworking.send(player, new GenomeDataPayload(
+                                            ToNekoNetworking.send(player, new GenomeDataPayload(
                                                     target.getId(),
                                                     geneticEntity.getGenome().save(),
                                                     false

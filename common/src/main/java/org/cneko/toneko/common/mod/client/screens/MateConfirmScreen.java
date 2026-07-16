@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,7 +31,7 @@ public class MateConfirmScreen extends Screen {
         int ignoreButtonY = this.height / 2 - 40; // 上方按钮
         this.addRenderableWidget(new Button.Builder(Component.literal("忽略交配过程"), button -> {
             this.minecraft.setScreen(null);
-            ClientPlayNetworking.send(new NekoMatePayload(neko.getUUID().toString(), entity.getEntity().getUUID().toString()));
+            ToNekoClientNetworking.send(new NekoMatePayload(neko.getUUID().toString(), entity.getEntity().getUUID().toString()));
         }).bounds(buttonX, ignoreButtonY, buttonWidth, buttonHeight).build());
 
         // 完整交配过程按钮

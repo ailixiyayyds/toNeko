@@ -2,6 +2,7 @@ package org.cneko.toneko.common.mod.client.events;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -19,7 +20,7 @@ public class ClientPlayerJoinEvent {
         t.addTask(40,()->{
             if (ClientPlayNetworking.canSend(PluginDetectPayload.ID)) {
                 // 告诉服务端，客户端已安装
-                ClientPlayNetworking.send(new PluginDetectPayload("YES"));
+                ToNekoClientNetworking.send(new PluginDetectPayload("YES"));
             }
         });
         TickTasks.addClient(t);

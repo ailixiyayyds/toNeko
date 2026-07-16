@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.commands;
+package org.cneko.toneko.common.mod.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,6 +25,7 @@ import org.cneko.toneko.common.mod.commands.arguments.NekoSuggestionProvider;
 import org.cneko.toneko.common.mod.commands.arguments.WordSuggestionProvider;
 import org.cneko.toneko.common.mod.entities.INeko;
 import org.cneko.toneko.common.mod.packets.ToNekoManagementDataPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -311,7 +312,7 @@ public class ToNekoCommand {
     public static int guiCommand(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
         CompoundTag data = buildManagementData(player);
-        ServerPlayNetworking.send(player, new ToNekoManagementDataPayload(data));
+        ToNekoNetworking.send(player, new ToNekoManagementDataPayload(data));
         return 1;
     }
 

@@ -1,38 +1,36 @@
 package org.cneko.toneko.common.mod.packets;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-public record QuirkQueryPayload(List<String> quirks,List<String> allQuirks,boolean openScreen) implements CustomPacketPayload{
-    public static final CustomPacketPayload.Type<QuirkQueryPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "quirk_query"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, QuirkQueryPayload> CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), QuirkQueryPayload::getQuirks,
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), QuirkQueryPayload::getAllQuirks,
-            ByteBufCodecs.BOOL, QuirkQueryPayload::isOpenScreen,
-            QuirkQueryPayload::new
-    );
-
-    public List<String> getQuirks() {
-        return quirks;
+public record QuirkQueryPayload(List<String> quirks, List<String> allQuirks, boolean openScreen)
+        implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "quirk_query");
+    public static QuirkQueryPayload read(FriendlyByteBuf buf) {
+        return new QuirkQueryPayload(readStrings(buf), readStrings(buf), buf.readBoolean());
     }
-    public List<String> getAllQuirks() {
-        return allQuirks;
+    private static List<String> readStrings(FriendlyByteBuf buf) {
+        int size = buf.readVarInt();
+        List<String> values = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) values.add(buf.readUtf());
+        return values;
     }
-    public boolean isOpenScreen() {
-        return openScreen;
+    private static void writeStrings(FriendlyByteBuf buf, List<String> values) {
+        buf.writeVarInt(values.size());
+        values.forEach(buf::writeUtf);
     }
-
-
-    @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return ID;
+    public void write(FriendlyByteBuf buf) {
+        writeStrings(buf, quirks);
+        writeStrings(buf, allQuirks);
+        buf.writeBoolean(openScreen);
     }
+    public List<String> getQuirks() { return quirks; }
+    public List<String> getAllQuirks() { return allQuirks; }
+    public boolean isOpenScreen() { return openScreen; }
+    public ResourceLocation id() { return ID; }
 }

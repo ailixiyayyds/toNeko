@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.events;
+package org.cneko.toneko.common.mod.events;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
@@ -42,22 +42,22 @@ import java.util.*;
 
 public class ToNekoNetworkEvents {
     public static void init(){
-        ServerPlayNetworking.registerGlobalReceiver(QuirkQueryPayload.ID, ToNekoNetworkEvents::onQuirkQueryNetWorking);
-        ServerPlayNetworking.registerGlobalReceiver(GiftItemPayload.ID, ToNekoNetworkEvents::onGiftItem);
-        ServerPlayNetworking.registerGlobalReceiver(FollowOwnerPayload.ID, ToNekoNetworkEvents::onFollowOwner);
-        ServerPlayNetworking.registerGlobalReceiver(RideEntityPayload.ID, ToNekoNetworkEvents::onRideEntity);
-        ServerPlayNetworking.registerGlobalReceiver(NekoPosePayload.ID, ToNekoNetworkEvents::onSetPose);
-        ServerPlayNetworking.registerGlobalReceiver(NekoMatePayload.ID, ToNekoNetworkEvents::onBreed);
-        ServerPlayNetworking.registerGlobalReceiver(ChatWithNekoPayload.ID, ToNekoNetworkEvents::onChatWithNeko);
-        ServerPlayNetworking.registerGlobalReceiver(ChatHistoryRequestPayload.ID, ToNekoNetworkEvents::onChatHistoryRequest);
-        ServerPlayNetworking.registerGlobalReceiver(ChatModePayload.ID, ToNekoNetworkEvents::onChatMode);
-        ServerPlayNetworking.registerGlobalReceiver(MateWithCrystalNekoPayload.ID, ToNekoNetworkEvents::onMateWithCrystalNeko);
-        ServerPlayNetworking.registerGlobalReceiver(CrystalNekoNyaPayload.ID, ToNekoNetworkEvents::onCrystalNekoNya);
-        ServerPlayNetworking.registerGlobalReceiver(DismountPassengerPayload.ID, ToNekoNetworkEvents::onDismountPassenger);
-        ServerPlayNetworking.registerGlobalReceiver(PlayerLeadByPlayerPayload.ID,ToNekoNetworkEvents::onPlayerLeadByPlayer);
-        ServerPlayNetworking.registerGlobalReceiver(PluginDetectPayload.ID,(a,b)->{});// 什么也不干
-        ServerPlayNetworking.registerGlobalReceiver(ToNekoActionPayload.ID, ToNekoNetworkEvents::onToNekoAction);
-        ServerPlayNetworking.registerGlobalReceiver(GenomeDataPayload.ID, (payload, context) -> {
+        ToNekoNetworking.registerC2S(QuirkQueryPayload.ID, QuirkQueryPayload::read, ToNekoNetworkEvents::onQuirkQueryNetWorking);
+        ToNekoNetworking.registerC2S(GiftItemPayload.ID, GiftItemPayload::read, ToNekoNetworkEvents::onGiftItem);
+        ToNekoNetworking.registerC2S(FollowOwnerPayload.ID, FollowOwnerPayload::read, ToNekoNetworkEvents::onFollowOwner);
+        ToNekoNetworking.registerC2S(RideEntityPayload.ID, RideEntityPayload::read, ToNekoNetworkEvents::onRideEntity);
+        ToNekoNetworking.registerC2S(NekoPosePayload.ID, NekoPosePayload::read, ToNekoNetworkEvents::onSetPose);
+        ToNekoNetworking.registerC2S(NekoMatePayload.ID, NekoMatePayload::read, ToNekoNetworkEvents::onBreed);
+        ToNekoNetworking.registerC2S(ChatWithNekoPayload.ID, ChatWithNekoPayload::read, ToNekoNetworkEvents::onChatWithNeko);
+        ToNekoNetworking.registerC2S(ChatHistoryRequestPayload.ID, ChatHistoryRequestPayload::read, ToNekoNetworkEvents::onChatHistoryRequest);
+        ToNekoNetworking.registerC2S(ChatModePayload.ID, ChatModePayload::read, ToNekoNetworkEvents::onChatMode);
+        ToNekoNetworking.registerC2S(MateWithCrystalNekoPayload.ID, MateWithCrystalNekoPayload::read, ToNekoNetworkEvents::onMateWithCrystalNeko);
+        ToNekoNetworking.registerC2S(CrystalNekoNyaPayload.ID, CrystalNekoNyaPayload::read, ToNekoNetworkEvents::onCrystalNekoNya);
+        ToNekoNetworking.registerC2S(DismountPassengerPayload.ID, DismountPassengerPayload::read, ToNekoNetworkEvents::onDismountPassenger);
+        ToNekoNetworking.registerC2S(PlayerLeadByPlayerPayload.ID, PlayerLeadByPlayerPayload::read, ToNekoNetworkEvents::onPlayerLeadByPlayer);
+        ToNekoNetworking.registerC2S(PluginDetectPayload.ID, PluginDetectPayload::read, (payload, context) -> {});// 什么也不干
+        ToNekoNetworking.registerC2S(ToNekoActionPayload.ID, ToNekoActionPayload::read, ToNekoNetworkEvents::onToNekoAction);
+        ToNekoNetworking.registerC2S(GenomeDataPayload.ID, GenomeDataPayload::read, (payload, context) -> {
             ServerPlayer player = context.player();
 
             // 防作弊校验 1：必须拥有修改权限 (只有发包带有 canEdit 且手持物品，或者有管理员权限才行)
@@ -84,19 +84,19 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onPlayerLeadByPlayer(PlayerLeadByPlayerPayload payload, ServerPlayNetworking.Context context) {
+    public static void onPlayerLeadByPlayer(PlayerLeadByPlayerPayload payload, ToNekoNetworking.ServerContext context) {
         try{
             // 寻找对应玩家（如果有的话）
             Player holder = PlayerUtil.getPlayerByUUID(UUID.fromString(payload.holder()));
             Player target = PlayerUtil.getPlayerByUUID(UUID.fromString(payload.target()));
             // 告诉玩家自己被拴上了
-            ServerPlayNetworking.send((ServerPlayer) holder, new PlayerLeadByPlayerPayload(holder.getUUID().toString(),target.getUUID().toString()));
-            ServerPlayNetworking.send((ServerPlayer) target, new PlayerLeadByPlayerPayload(holder.getUUID().toString(),target.getUUID().toString()));
+            ToNekoNetworking.send((ServerPlayer) holder, new PlayerLeadByPlayerPayload(holder.getUUID().toString(),target.getUUID().toString()));
+            ToNekoNetworking.send((ServerPlayer) target, new PlayerLeadByPlayerPayload(holder.getUUID().toString(),target.getUUID().toString()));
         }catch (Exception ignored){
         }
     }
 
-    public static void onMateWithCrystalNeko(MateWithCrystalNekoPayload mateWithCrystalNekoPayload, ServerPlayNetworking.Context context) {
+    public static void onMateWithCrystalNeko(MateWithCrystalNekoPayload mateWithCrystalNekoPayload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), mateWithCrystalNekoPayload.uuid(), neko -> {
             if (neko instanceof CrystalNekoEntity cneko){
                 cneko.tryMating((ServerLevel) neko.level(), context.player());
@@ -104,7 +104,7 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onCrystalNekoNya(CrystalNekoNyaPayload payload, ServerPlayNetworking.Context context) {
+    public static void onCrystalNekoNya(CrystalNekoNyaPayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> {
             if (neko instanceof CrystalNekoEntity cneko) {
                 cneko.syncNya();
@@ -112,14 +112,14 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onDismountPassenger(DismountPassengerPayload payload, ServerPlayNetworking.Context context) {
+    public static void onDismountPassenger(DismountPassengerPayload payload, ToNekoNetworking.ServerContext context) {
         ServerPlayer player = context.player();
         player.getPassengers().forEach(Entity::stopRiding);
         // 显式同步乘客列表到客户端，避免客户端未及时更新的问题
         player.connection.send(new ClientboundSetPassengersPacket(player));
     }
 
-    public static void onChatWithNeko(ChatWithNekoPayload payload, ServerPlayNetworking.Context context) {
+    public static void onChatWithNeko(ChatWithNekoPayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> {
             if (!ConfigUtil.isAIEnabled()){
                 context.player().sendSystemMessage(Component.translatable("messages.toneko.ai.not_enabled"));
@@ -148,7 +148,7 @@ public class ToNekoNetworkEvents {
                     }
                     // 如果启用了TTS
                     if (ConfigUtil.isAITTSEnabled()){
-                        ServerPlayNetworking.send(player, new TTSSendPayload(response.getResponse()));
+                        ToNekoNetworking.send(player, new TTSSendPayload(response.getResponse()));
                     }
                 });
             }
@@ -303,7 +303,7 @@ public class ToNekoNetworkEvents {
 
 
 
-    public static void onBreed(NekoMatePayload payload, ServerPlayNetworking.Context context) {
+    public static void onBreed(NekoMatePayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> {
             Entity mate = findNearbyEntityByUuid(context.player(),UUID.fromString(payload.mateUuid()),10);
             if (mate instanceof INeko m){
@@ -320,7 +320,7 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onSetPose(NekoPosePayload payload, ServerPlayNetworking.Context context) {
+    public static void onSetPose(NekoPosePayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> {
             if (!EntityPoseManager.contains(neko)){
                 EntityPoseManager.setPose(neko, payload.pose());
@@ -330,7 +330,7 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onRideEntity(RideEntityPayload payload, ServerPlayNetworking.Context context) {
+    public static void onRideEntity(RideEntityPayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> {
            Entity entity = findNearbyEntityByUuid(context.player(),UUID.fromString(payload.vehicleUuid()),5);
             if (entity != null){
@@ -346,11 +346,11 @@ public class ToNekoNetworkEvents {
         });
     }
 
-    public static void onFollowOwner(FollowOwnerPayload payload, ServerPlayNetworking.Context context) {
+    public static void onFollowOwner(FollowOwnerPayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> neko.followOwner(context.player()));
     }
 
-    public static void onGiftItem(GiftItemPayload payload, ServerPlayNetworking.Context context) {
+    public static void onGiftItem(GiftItemPayload payload, ToNekoNetworking.ServerContext context) {
         processNekoInteractive(context.player(), payload.uuid(), neko -> neko.giftItem(context.player(), payload.slot()));
     }
 
@@ -374,7 +374,7 @@ public class ToNekoNetworkEvents {
         void find(NekoEntity nekoEntity);
     }
 
-    public static void onQuirkQueryNetWorking(QuirkQueryPayload payload, ServerPlayNetworking.Context context) {
+    public static void onQuirkQueryNetWorking(QuirkQueryPayload payload, ToNekoNetworking.ServerContext context) {
         ServerPlayer player = context.player();
         if (!PermissionUtil.has(player, Permissions.COMMAND_QUIRK)){
             // 没有权限
@@ -412,7 +412,7 @@ public class ToNekoNetworkEvents {
 
     // ========== ToNeko Management GUI handlers ==========
 
-    public static void onToNekoAction(ToNekoActionPayload payload, ServerPlayNetworking.Context context) {
+    public static void onToNekoAction(ToNekoActionPayload payload, ToNekoNetworking.ServerContext context) {
         ServerPlayer player = context.player();
         context.server().execute(() -> {
             try {
@@ -526,7 +526,7 @@ public class ToNekoNetworkEvents {
 
     private static void handleGuiRefresh(ServerPlayer player) {
         CompoundTag data = ToNekoCommand.buildManagementData(player);
-        ServerPlayNetworking.send(player, new ToNekoManagementDataPayload(data));
+        ToNekoNetworking.send(player, new ToNekoManagementDataPayload(data));
     }
 
     // Per-player chat mode: true=area (64-block range + neko AI), false=global (all players, no AI)
@@ -536,7 +536,7 @@ public class ToNekoNetworkEvents {
         return CHAT_MODES.getOrDefault(playerUuid, false);
     }
 
-    public static void onChatMode(ChatModePayload payload, ServerPlayNetworking.Context context) {
+    public static void onChatMode(ChatModePayload payload, ToNekoNetworking.ServerContext context) {
         CHAT_MODES.put(context.player().getUUID(), payload.area());
     }
 
@@ -562,13 +562,13 @@ public class ToNekoNetworkEvents {
         } catch (Exception e) {
             Bootstrap.LOGGER.warn("Failed to push chat history: {}", e.getMessage());
         }
-        ServerPlayNetworking.send(player, new ChatHistoryResponsePayload(nekoUuid, messages));
+        ToNekoNetworking.send(player, new ChatHistoryResponsePayload(nekoUuid, messages));
     }
 
     /**
      * Handle client request for chat history. Reads directly from disk (no entity needed).
      */
-    public static void onChatHistoryRequest(ChatHistoryRequestPayload payload, ServerPlayNetworking.Context context) {
+    public static void onChatHistoryRequest(ChatHistoryRequestPayload payload, ToNekoNetworking.ServerContext context) {
         ServerPlayer player = context.player();
         String nekoUuid = payload.nekoUuid();
         if (nekoUuid == null || nekoUuid.isEmpty()) return;

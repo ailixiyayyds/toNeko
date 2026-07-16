@@ -1,21 +1,14 @@
 package org.cneko.toneko.common.mod.packets.interactives;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.cneko.toneko.common.mod.packets.ToNekoPayload;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-/**
- * C2S 数据包：玩家请求让头上的乘客下来
- */
-public record DismountPassengerPayload() implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<DismountPassengerPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "dismount_passenger"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, DismountPassengerPayload> CODEC = StreamCodec.unit(new DismountPassengerPayload());
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return ID;
-    }
+public record DismountPassengerPayload() implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "dismount_passenger");
+    public static DismountPassengerPayload read(FriendlyByteBuf buf) { return new DismountPassengerPayload(); }
+    public void write(FriendlyByteBuf buf) { }
+    public ResourceLocation id() { return ID; }
 }

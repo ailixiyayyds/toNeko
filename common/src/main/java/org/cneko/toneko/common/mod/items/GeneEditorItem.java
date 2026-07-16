@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.items;
+package org.cneko.toneko.common.mod.items;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.cneko.toneko.common.mod.genetics.api.IGeneticEntity;
 import org.cneko.toneko.common.mod.packets.GenomeDataPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.jetbrains.annotations.NotNull;
 
 public class GeneEditorItem extends Item {
@@ -21,7 +22,7 @@ public class GeneEditorItem extends Item {
     public @NotNull InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
         if (!player.level().isClientSide() && interactionTarget instanceof IGeneticEntity geneticEntity) {
             // 发送给客户端，标记 canEdit = true
-            ServerPlayNetworking.send((ServerPlayer) player, new GenomeDataPayload(
+            ToNekoNetworking.send((ServerPlayer) player, new GenomeDataPayload(
                     interactionTarget.getId(),
                     geneticEntity.getGenome().save(),
                     true

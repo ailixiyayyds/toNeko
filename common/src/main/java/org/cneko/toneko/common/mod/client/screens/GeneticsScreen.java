@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -91,7 +92,7 @@ public class GeneticsScreen extends Screen {
 
         if (canEdit) {
             saveBtn = this.addRenderableWidget(Button.builder(Component.translatable("gui.toneko.genetics_viewer.save"), btn -> {
-                ClientPlayNetworking.send(new GenomeDataPayload(entityId, genomeNbt, true));
+                ToNekoClientNetworking.send(new GenomeDataPayload(entityId, genomeNbt, true));
                 this.minecraft.setScreen(null);
             }).bounds(this.width - 110, this.height - 30, 100, 20).build());
         }

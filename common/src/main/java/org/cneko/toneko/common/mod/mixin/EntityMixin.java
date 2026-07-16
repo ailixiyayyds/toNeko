@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.mixin;
+package org.cneko.toneko.common.mod.mixin;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import org.cneko.toneko.common.mod.api.EntityPoseManager;
 import org.cneko.toneko.common.mod.client.api.ClientEntityPoseManager;
 import org.cneko.toneko.common.mod.packets.EntityPosePayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.util.EntityUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -72,7 +73,7 @@ public abstract class EntityMixin{
                 }
                 var players = EntityUtil.getPlayersInRange(entity, entity.level(), 16);
                 for (Player player : players) {
-                    ServerPlayNetworking.send((ServerPlayer) player, new EntityPosePayload(pose, entity.getUUID().toString(), status));
+                    ToNekoNetworking.send((ServerPlayer) player, new EntityPosePayload(pose, entity.getUUID().toString(), status));
                 }
             }
         }

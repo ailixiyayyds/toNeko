@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.commands;
+package org.cneko.toneko.common.mod.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.cneko.toneko.common.api.Permissions;
 import org.cneko.toneko.common.mod.packets.QuirkQueryPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.quirks.Quirk;
 import org.cneko.toneko.common.mod.util.CommandUtil;
 import org.cneko.toneko.common.mod.util.PermissionUtil;
@@ -59,7 +60,7 @@ public class QuirkCommand {
     public static int quirkGui(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
         // 打开设置屏幕
-        ServerPlayNetworking.send(player, new QuirkQueryPayload(
+        ToNekoNetworking.send(player, new QuirkQueryPayload(
                 QuirkUtil.quirkToIds(player.getQuirks()),
                 QuirkRegister.getQuirkIds().stream().toList(),true)
         );

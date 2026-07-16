@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.entities;
+package org.cneko.toneko.common.mod.entities;
 
 import lombok.Getter;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -59,6 +59,7 @@ import org.cneko.toneko.common.mod.items.ToNekoItems;
 import org.cneko.toneko.common.mod.misc.ToNekoAttributes;
 import org.cneko.toneko.common.mod.misc.ToNekoSoundEvents;
 import org.cneko.toneko.common.mod.packets.interactives.NekoEntityInteractivePayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.quirks.Quirk;
 import org.cneko.toneko.common.mod.util.EntityUtil;
 import org.cneko.toneko.common.util.ConfigUtil;
@@ -971,7 +972,7 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
     }
 
     public void openInteractiveMenu(ServerPlayer player) {
-        ServerPlayNetworking.send(player, new NekoEntityInteractivePayload(this.getUUID().toString()));
+        ToNekoNetworking.send(player, new NekoEntityInteractivePayload(this.getUUID().toString()));
     }
 
     @Override

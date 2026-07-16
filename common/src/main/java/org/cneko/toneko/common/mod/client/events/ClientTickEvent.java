@@ -3,6 +3,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -65,7 +66,7 @@ public class ClientTickEvent {
         while (ToNekoKeyBindings.DISMOUNT_PASSENGER_KEY.consumeClick()) {
             var player = client.player;
             if (player != null && !player.getPassengers().isEmpty()) {
-                ClientPlayNetworking.send(new DismountPassengerPayload());
+                ToNekoClientNetworking.send(new DismountPassengerPayload());
             }
         }
         while (ToNekoKeyBindings.TONEKO_MANAGEMENT_KEY.consumeClick()) {

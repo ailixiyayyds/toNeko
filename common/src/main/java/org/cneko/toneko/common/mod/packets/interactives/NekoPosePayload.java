@@ -1,24 +1,15 @@
 package org.cneko.toneko.common.mod.packets.interactives;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.cneko.toneko.common.mod.packets.ToNekoPayload;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-public record NekoPosePayload(@NotNull Pose pose, @NotNull String uuid ) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<NekoPosePayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "entity_set_pose"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, NekoPosePayload> CODEC = StreamCodec.composite(
-            Pose.STREAM_CODEC, NekoPosePayload::pose,
-            ByteBufCodecs.STRING_UTF8, NekoPosePayload::uuid,
-            NekoPosePayload::new);
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return ID;
-    }
+public record NekoPosePayload(Pose pose, String uuid) implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "entity_set_pose");
+    public static NekoPosePayload read(FriendlyByteBuf buf) { return new NekoPosePayload(buf.readEnum(Pose.class), buf.readUtf()); }
+    public void write(FriendlyByteBuf buf) { buf.writeEnum(pose).writeUtf(uuid); }
+    public ResourceLocation id() { return ID; }
 }

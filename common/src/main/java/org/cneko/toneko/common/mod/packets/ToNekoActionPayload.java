@@ -1,27 +1,18 @@
 package org.cneko.toneko.common.mod.packets;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import static org.cneko.toneko.common.mod.util.ResourceLocationUtil.toNekoLoc;
 
-public record ToNekoActionPayload(String action, String targetUuid, String value1, String value2, String value3) implements CustomPacketPayload {
-    public static final Type<ToNekoActionPayload> ID = new Type<>(toNekoLoc("toneko_action"));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, ToNekoActionPayload> CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, ToNekoActionPayload::action,
-            ByteBufCodecs.STRING_UTF8, ToNekoActionPayload::targetUuid,
-            ByteBufCodecs.STRING_UTF8, ToNekoActionPayload::value1,
-            ByteBufCodecs.STRING_UTF8, ToNekoActionPayload::value2,
-            ByteBufCodecs.STRING_UTF8, ToNekoActionPayload::value3,
-            ToNekoActionPayload::new
-    );
-
-    @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return ID;
+public record ToNekoActionPayload(String action, String targetUuid, String value1, String value2, String value3)
+        implements ToNekoPayload {
+    public static final ResourceLocation ID = toNekoLoc("toneko_action");
+    public static ToNekoActionPayload read(FriendlyByteBuf buf) {
+        return new ToNekoActionPayload(buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readUtf(), buf.readUtf());
     }
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(action).writeUtf(targetUuid).writeUtf(value1).writeUtf(value2).writeUtf(value3);
+    }
+    public ResourceLocation id() { return ID; }
 }

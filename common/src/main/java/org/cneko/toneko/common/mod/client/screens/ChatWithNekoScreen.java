@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -55,7 +56,7 @@ public class ChatWithNekoScreen extends Screen implements INekoScreen {
     }
 
     private void refreshHistory() {
-        ClientPlayNetworking.send(new ChatHistoryRequestPayload(neko.getUUID().toString()));
+        ToNekoClientNetworking.send(new ChatHistoryRequestPayload(neko.getUUID().toString()));
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ChatWithNekoScreen extends Screen implements INekoScreen {
     private void sendMessage() {
         String msg = textField.getValue().trim();
         if (msg.isEmpty()) return;
-        ClientPlayNetworking.send(new ChatWithNekoPayload(neko.getUUID().toString(), msg));
+        ToNekoClientNetworking.send(new ChatWithNekoPayload(neko.getUUID().toString(), msg));
         // Add to local display immediately (server response comes as system chat, not to this screen)
         List<String> h = history();
         h.add("§6> §f" + msg);

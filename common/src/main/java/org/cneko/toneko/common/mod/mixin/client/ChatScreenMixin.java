@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.mixin.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,7 +34,7 @@ public abstract class ChatScreenMixin extends Screen {
     @Unique
     private void toggleMode() {
         areaChatMode = !areaChatMode;
-        ClientPlayNetworking.send(new ChatModePayload(areaChatMode));
+        ToNekoClientNetworking.send(new ChatModePayload(areaChatMode));
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)

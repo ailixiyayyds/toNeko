@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.mixin;
+package org.cneko.toneko.common.mod.mixin;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
@@ -25,6 +25,7 @@ import org.cneko.toneko.common.mod.entities.INeko;
 import org.cneko.toneko.common.mod.misc.mixininterface.SlowTickable;
 import org.cneko.toneko.common.mod.packets.EntityPosePayload;
 import org.cneko.toneko.common.mod.packets.NekoInfoSyncPayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.packets.PlayerLeadByPlayerPayload;
 import org.cneko.toneko.common.mod.quirks.Quirk;
 import org.cneko.toneko.common.mod.util.EntityUtil;
@@ -111,7 +112,7 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
                     status = true;
                     pose = EntityPoseManager.getPose(player);
                 }
-                ServerPlayNetworking.send(sp,new EntityPosePayload(pose,"self",status));
+                ToNekoNetworking.send(sp,new EntityPosePayload(pose,"self",status));
             }
         }
         // 自然成长：幼年猫娘每秒成长1 tick，约10个游戏日成年
@@ -134,7 +135,7 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
 
     @Unique
     private void toneko$syncNekoInfo(ServerPlayer sp){
-        ServerPlayNetworking.send(sp, new NekoInfoSyncPayload(
+        ToNekoNetworking.send(sp, new NekoInfoSyncPayload(
                 this.getNekoEnergy(),
                 this.getMaxNekoEnergy(),
                 this.getNekoLevelFactorRaw("interaction"),
@@ -241,8 +242,8 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
                 holder.getMainHandItem().setCount(holder.getMainHandItem().getCount() - 1);
                 // 在服务端运行的话呢同时发给客户端
                 if (player instanceof ServerPlayer sp) {
-                    ServerPlayNetworking.send(sp, new PlayerLeadByPlayerPayload(holder.getUUID().toString(), player.getUUID().toString()));
-                    ServerPlayNetworking.send((ServerPlayer) holder,new PlayerLeadByPlayerPayload(holder.getUUID().toString(),player.getUUID().toString()));
+                    ToNekoNetworking.send(sp, new PlayerLeadByPlayerPayload(holder.getUUID().toString(), player.getUUID().toString()));
+                    ToNekoNetworking.send((ServerPlayer) holder,new PlayerLeadByPlayerPayload(holder.getUUID().toString(),player.getUUID().toString()));
                 }
                 cir.setReturnValue(false);
                 cir.cancel();

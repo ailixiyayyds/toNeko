@@ -1,23 +1,14 @@
 package org.cneko.toneko.common.mod.packets.interactives;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import org.cneko.toneko.common.mod.packets.ToNekoPayload;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-public record GiftItemPayload(String uuid, int slot) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<GiftItemPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "neko_entity_interactive_gift_item"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, GiftItemPayload> CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8,GiftItemPayload::uuid,
-            ByteBufCodecs.INT,GiftItemPayload::slot,
-            GiftItemPayload::new
-    );
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return ID;
-    }
+public record GiftItemPayload(String uuid, int slot) implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "neko_entity_interactive_gift_item");
+    public static GiftItemPayload read(FriendlyByteBuf buf) { return new GiftItemPayload(buf.readUtf(), buf.readInt()); }
+    public void write(FriendlyByteBuf buf) { buf.writeUtf(uuid).writeInt(slot); }
+    public ResourceLocation id() { return ID; }
 }

@@ -27,9 +27,9 @@ import java.util.UUID;
 
 public class ClientNetworkEvents {
     public static void init(){
-        ClientPlayNetworking.registerGlobalReceiver(EntityPosePayload.ID, (payload, context) -> context.client().execute(() -> setPose(payload,context)));
+        ToNekoClientNetworking.registerS2C(EntityPosePayload.ID, EntityPosePayload::read, (payload, context) -> context.client().execute(() -> setPose(payload,context)));
 
-        ClientPlayNetworking.registerGlobalReceiver(QuirkQueryPayload.ID, (payload, context) ->{
+        ToNekoClientNetworking.registerS2C(QuirkQueryPayload.ID, QuirkQueryPayload::read, (payload, context) ->{
             if (payload.isOpenScreen()) {
                 // 打开屏幕
                 context.client().execute(() -> {
@@ -39,7 +39,7 @@ public class ClientNetworkEvents {
             }
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(NekoEntityInteractivePayload.ID, (payload, context) -> context.client().execute(() -> {
+        ToNekoClientNetworking.registerS2C(NekoEntityInteractivePayload.ID, NekoEntityInteractivePayload::read, (payload, context) -> context.client().execute(() -> {
             // 通过uuid寻找猫娘
             String uuid = payload.uuid();
             if(uuid != null && !uuid.isEmpty()) {
@@ -52,7 +52,7 @@ public class ClientNetworkEvents {
         }));
 
 
-        ClientPlayNetworking.registerGlobalReceiver(PlayerLeadByPlayerPayload.ID, (payload, context) -> context.client().execute(()->{
+        ToNekoClientNetworking.registerS2C(PlayerLeadByPlayerPayload.ID, PlayerLeadByPlayerPayload::read, (payload, context) -> context.client().execute(()->{
             // 获取玩家（如果存在的话）
             Player holder = ClientPlayerUtil.getPlayerByUUID(UUID.fromString(payload.holder()));
             Player target = ClientPlayerUtil.getPlayerByUUID(UUID.fromString(payload.target()));
@@ -62,13 +62,13 @@ public class ClientNetworkEvents {
             }
         }));
 
-        ClientPlayNetworking.registerGlobalReceiver(TTSSendPayload.ID, ((payload, context) -> context.client().execute(()->{
+        ToNekoClientNetworking.registerS2C(TTSSendPayload.ID, TTSSendPayload::read, ((payload, context) -> context.client().execute(()->{
             if (ConfigUtil.isAITTSEnabled()){
                 AIUtil.playTTS(payload.text(),ConfigUtil.getAITTSVoice());
             }
         })));
 
-        ClientPlayNetworking.registerGlobalReceiver(NekoInfoSyncPayload.ID,(payload,context)-> context.client().execute(()->{
+        ToNekoClientNetworking.registerS2C(NekoInfoSyncPayload.ID, NekoInfoSyncPayload::read,(payload,context)-> context.client().execute(()->{
             Player player = context.player();
             player.setNekoEnergy(payload.energy());
             if (player instanceof org.cneko.toneko.common.mod.entities.INeko neko) {
@@ -80,15 +80,15 @@ public class ClientNetworkEvents {
             }
         }));
 
-        ClientPlayNetworking.registerGlobalReceiver(OpenPlotScreenPayload.ID,  (payload, context) -> context.client().execute(() -> {
+        ToNekoClientNetworking.registerS2C(OpenPlotScreenPayload.ID, OpenPlotScreenPayload::read,  (payload, context) -> context.client().execute(() -> {
             context.client().setScreen(new PlotScrollScreen());
         }));
 
-        ClientPlayNetworking.registerGlobalReceiver(OpenNekoInfoScreenPayload.ID, (payload, context) -> context.client().execute(() -> {
+        ToNekoClientNetworking.registerS2C(OpenNekoInfoScreenPayload.ID, OpenNekoInfoScreenPayload::read, (payload, context) -> context.client().execute(() -> {
             NekoInfoScreen.open();
         }));
 
-        ClientPlayNetworking.registerGlobalReceiver(ToNekoManagementDataPayload.ID, (payload, context) -> context.client().execute(() -> {
+        ToNekoClientNetworking.registerS2C(ToNekoManagementDataPayload.ID, ToNekoManagementDataPayload::read, (payload, context) -> context.client().execute(() -> {
             Screen currentScreen = Minecraft.getInstance().screen;
             if (currentScreen instanceof ToNekoManagementScreen tms) {
                 tms.handleDataUpdate(payload.data());
@@ -97,14 +97,14 @@ public class ClientNetworkEvents {
             }
         }));
 
-        ClientPlayNetworking.registerGlobalReceiver(GenomeDataPayload.ID, (payload, context) -> {
+        ToNekoClientNetworking.registerS2C(GenomeDataPayload.ID, GenomeDataPayload::read, (payload, context) -> {
             context.client().execute(() -> {
                 // 打开 UI，把数据传进去
                 context.client().setScreen(new GeneticsScreen(payload.entityId(), payload.genomeNbt(), payload.canEdit()));
             });
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(ChatHistoryResponsePayload.ID, (payload, context) -> {
+        ToNekoClientNetworking.registerS2C(ChatHistoryResponsePayload.ID, ChatHistoryResponsePayload::read, (payload, context) -> {
             context.client().execute(() -> {
                 ChatWithNekoScreen.receiveHistory(
                         UUID.fromString(payload.nekoUuid()), payload.messages());
@@ -112,7 +112,7 @@ public class ClientNetworkEvents {
         });
 
     }
-    public static void setPose(EntityPosePayload payload, ClientPlayNetworking.Context context) {
+    public static void setPose(EntityPosePayload payload, ToNekoClientNetworking.ClientContext context) {
         String uuid = payload.uuid();
         if (uuid==null){
             return;

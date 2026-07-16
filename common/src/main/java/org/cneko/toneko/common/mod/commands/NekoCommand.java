@@ -1,4 +1,4 @@
-package org.cneko.toneko.common.mod.commands;
+package org.cneko.toneko.common.mod.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -27,6 +27,7 @@ import org.cneko.toneko.common.mod.entities.NekoEntity;
 import org.cneko.toneko.common.mod.misc.Messaging;
 import org.cneko.toneko.common.mod.misc.ToNekoAttributes;
 import org.cneko.toneko.common.mod.packets.EntityPosePayload;
+import org.cneko.toneko.common.mod.packets.ToNekoNetworking;
 import org.cneko.toneko.common.mod.util.EntityUtil;
 import org.cneko.toneko.common.mod.util.PermissionUtil;
 import org.cneko.toneko.common.util.AIUtil;
@@ -191,7 +192,7 @@ public class NekoCommand {
     // 发送姿态包
     private static void sendPosePacket(Entity entity, Pose pose, boolean isSet) {
         if (entity instanceof ServerPlayer player) {
-            ServerPlayNetworking.send(player, new EntityPosePayload(pose,entity.getUUID().toString(), isSet));
+            ToNekoNetworking.send(player, new EntityPosePayload(pose,entity.getUUID().toString(), isSet));
         }
     }
 
@@ -236,7 +237,7 @@ public class NekoCommand {
             player.sendSystemMessage(translatable("command.neko.not_neko"));
             return 1;
         }
-        ServerPlayNetworking.send(player, new org.cneko.toneko.common.mod.packets.OpenNekoInfoScreenPayload());
+        ToNekoNetworking.send(player, new org.cneko.toneko.common.mod.packets.OpenNekoInfoScreenPayload());
         return 1;
     }
 

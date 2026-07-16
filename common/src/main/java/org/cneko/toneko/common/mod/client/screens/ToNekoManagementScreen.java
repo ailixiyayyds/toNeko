@@ -1,6 +1,7 @@
 package org.cneko.toneko.common.mod.client.screens;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.cneko.toneko.common.mod.client.events.ToNekoClientNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -528,7 +529,7 @@ public class ToNekoManagementScreen extends Screen {
     }
 
     private void sendAction(String action, String targetUuid, String v1, String v2, String v3) {
-        ClientPlayNetworking.send(new ToNekoActionPayload(action, targetUuid, v1, v2, v3));
+        ToNekoClientNetworking.send(new ToNekoActionPayload(action, targetUuid, v1, v2, v3));
     }
 
     // ---- Data classes ----

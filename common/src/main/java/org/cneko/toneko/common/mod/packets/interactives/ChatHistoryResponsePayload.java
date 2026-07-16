@@ -1,28 +1,26 @@
 package org.cneko.toneko.common.mod.packets.interactives;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.cneko.toneko.common.mod.packets.ToNekoPayload;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
-/**
- * S2C: Server sends chat history back to client.
- * Each string is formatted as "role:text" where role is "user" or "assistant".
- */
-public record ChatHistoryResponsePayload(String nekoUuid, List<String> messages) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ChatHistoryResponsePayload> ID =
-            new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "chat_history_response"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChatHistoryResponsePayload> CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8, ChatHistoryResponsePayload::nekoUuid,
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), ChatHistoryResponsePayload::messages,
-                    ChatHistoryResponsePayload::new);
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() { return ID; }
+public record ChatHistoryResponsePayload(String nekoUuid, List<String> messages) implements ToNekoPayload {
+    public static final ResourceLocation ID = new ResourceLocation(MODID, "chat_history_response");
+    public static ChatHistoryResponsePayload read(FriendlyByteBuf buf) {
+        String uuid = buf.readUtf();
+        int size = buf.readVarInt();
+        List<String> messages = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) messages.add(buf.readUtf(32767));
+        return new ChatHistoryResponsePayload(uuid, messages);
+    }
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(nekoUuid).writeVarInt(messages.size());
+        messages.forEach(message -> buf.writeUtf(message, 32767));
+    }
+    public ResourceLocation id() { return ID; }
 }
