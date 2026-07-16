@@ -7,6 +7,16 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath = project(':common').file('src/main/resources/toneko.accesswidener')
+    mods {
+        toneko {
+            sourceSet sourceSets.main
+            sourceSet project(':common').sourceSets.main
+        }
+    }
+}
+
 repositories {
     maven {
         name = "Terraformers"
@@ -47,9 +57,7 @@ dependencies {
         transitive = false
     }
     include "com.github.umjammer:jlayer:1.0.3"
-    modImplementation("dev.emi:trinkets:${trinkets_version}") {
-        transitive = false
-    }
+    modImplementation "dev.emi:trinkets:${trinkets_version}"
     modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
         transitive = false

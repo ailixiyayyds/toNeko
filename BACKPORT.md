@@ -8,17 +8,18 @@ This repository is a public, community-maintained backport of the original
 - Target: Minecraft 1.20.1 with Fabric
 - Upstream baseline: `V1.9.0` (`21790e31c6073bb941e6af1f0f2ecfa3c06ead2e`)
 - Development branch: `1.20.1-backport`
-- Status: the common and Fabric source sets compile on Java 17, and the
-  remapped Fabric JAR builds successfully. In-game smoke testing and behavioral
-  verification are the next milestone.
+- Status: the common and Fabric source sets compile on Java 17, the remapped
+  Fabric JAR builds successfully, and a dedicated-server development launch
+  passes Loader, Mixin, registry, and mod initialization before the expected
+  first-run EULA stop. Client and gameplay verification are the next milestone.
 - API reference: upstream tag `V1.3.9-1.20` is an actual Minecraft 1.20.1
   codebase and is used as a compatibility reference; it is not treated as the
   1.9.0 feature baseline.
 - Relationship to upstream: unofficial; issues specific to this backport belong in this fork
 
-The initial build milestone is complete. The next milestone is a Fabric client
-and dedicated server that start cleanly on Java 17. NeoForge support is outside
-the first milestone.
+The initial build and dedicated-server startup milestones are complete. The
+next milestone is a Fabric client smoke test and gameplay verification on Java
+17. NeoForge support is outside the first milestone.
 
 Ported API groups include network payloads, synced entity data, recipes,
 advancements, attributes, item NBT, GeckoLib rendering, screens, Fabric entity
