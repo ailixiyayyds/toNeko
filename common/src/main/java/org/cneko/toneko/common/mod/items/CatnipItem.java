@@ -1,7 +1,6 @@
 package org.cneko.toneko.common.mod.items;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -28,7 +27,7 @@ public class CatnipItem extends Item implements BazookaItem.Ammunition {
 
     @Override
     public @NotNull ItemStack finishUsingItem(ItemStack stack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
-        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
+        FoodProperties foodProperties = stack.getItem().getFoodProperties();
         if (foodProperties != null && !livingEntity.level().isClientSide) {
             if (livingEntity instanceof INeko neko && neko.isNeko()){
                 livingEntity.addEffect(new MobEffectInstance(

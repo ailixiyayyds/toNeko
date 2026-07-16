@@ -13,7 +13,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public class ExcitingEffect extends MobEffect {
     public static final String ID = "exciting";
-    public static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, ID);
+    public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
 
     public ExcitingEffect() {
         super(MobEffectCategory.NEUTRAL, 0xFF00FF);

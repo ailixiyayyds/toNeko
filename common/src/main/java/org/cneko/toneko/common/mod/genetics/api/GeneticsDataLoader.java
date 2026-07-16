@@ -92,7 +92,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
      */
     private ResourceLocation filePathToId(ResourceLocation fileId, String prefix) {
         String name = fileId.getPath().substring(prefix.length());
-        return ResourceLocation.fromNamespaceAndPath(fileId.getNamespace(), name);
+        return new ResourceLocation(fileId.getNamespace(), name);
     }
 
     /**
@@ -144,7 +144,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
                 if (op == null) continue;
 
                 // 解析属性引用
-                ResourceLocation attrRl = ResourceLocation.parse(attrId);
+                ResourceLocation attrRl = new ResourceLocation(attrId);
                 ResourceKey<Attribute> attrKey = ResourceKey.create(Registries.ATTRIBUTE, attrRl);
                 var attribute = BuiltInRegistries.ATTRIBUTE.getHolder(attrKey).orElse(null);
                 if (attribute == null) {
@@ -163,7 +163,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
         if (json.has("wild_pool")) {
             for (JsonElement elem : json.getAsJsonArray("wild_pool")) {
                 JsonObject poolEntry = elem.getAsJsonObject();
-                ResourceLocation locusId = ResourceLocation.parse(poolEntry.get("locus").getAsString());
+                ResourceLocation locusId = new ResourceLocation(poolEntry.get("locus").getAsString());
                 int weight = poolEntry.get("weight").getAsInt();
                 GeneticsRegistry.addWildAllele(locusId, id, weight);
                 GeneticsRegistry.DYNAMIC_WILD_POOLS
@@ -194,7 +194,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
         if (json.has("wild_pool")) {
             for (JsonElement elem : json.getAsJsonArray("wild_pool")) {
                 JsonObject poolEntry = elem.getAsJsonObject();
-                ResourceLocation alleleId = ResourceLocation.parse(poolEntry.get("allele").getAsString());
+                ResourceLocation alleleId = new ResourceLocation(poolEntry.get("allele").getAsString());
                 int weight = poolEntry.get("weight").getAsInt();
 
                 // 等位基因可能尚未加载（不同数据包加载顺序），但 GeneticRegistry 中应已存在
@@ -229,7 +229,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
             LOGGER.warn("核型补丁缺少 'target' 字段");
             return;
         }
-        ResourceLocation targetId = ResourceLocation.parse(json.get("target").getAsString());
+        ResourceLocation targetId = new ResourceLocation(json.get("target").getAsString());
         SpeciesKaryotype karyotype = GeneticsRegistry.getKaryotypeById(targetId);
         if (karyotype == null) {
             LOGGER.warn("核型补丁指向了不存在的核型: {}", targetId);
@@ -251,7 +251,7 @@ public class GeneticsDataLoader extends SimpleJsonResourceReloadListener impleme
                 karyotype.ensureChromosomeCapacity(chromosomeId);
 
                 for (JsonElement elem : addLoci.getAsJsonArray(chrKey)) {
-                    ResourceLocation locusId = ResourceLocation.parse(elem.getAsString());
+                    ResourceLocation locusId = new ResourceLocation(elem.getAsString());
                     Locus locus = GeneticsRegistry.getLocus(locusId);
                     if (locus == null) {
                         LOGGER.warn("核型补丁引用了不存在的基因座: {}", locusId);

@@ -172,7 +172,7 @@ public class RouletteScreen extends Screen implements ClientMusicPlayer.NotePlay
     private static List<IRouletteAction> getRouletteActions() {
         return List.of(
                 new DefaultRouletteAction(
-                        ResourceLocation.withDefaultNamespace("textures/item/barrier.png"),
+                        new ResourceLocation("textures/item/barrier.png"),
                         Component.translatable("gui.toneko.roulette.option.close"),
                         () -> Minecraft.getInstance().setScreen(null)
                 ),
@@ -188,7 +188,7 @@ public class RouletteScreen extends Screen implements ClientMusicPlayer.NotePlay
 
     private static DefaultRouletteAction createAction(String texturePath, String optionKey, String command) {
         return new DefaultRouletteAction(
-                ResourceLocation.withDefaultNamespace("textures/" + texturePath),
+                new ResourceLocation("textures/" + texturePath),
                 Component.translatable("gui.toneko.roulette.option." + optionKey),
                 () -> {
                     if (Minecraft.getInstance().player != null) {

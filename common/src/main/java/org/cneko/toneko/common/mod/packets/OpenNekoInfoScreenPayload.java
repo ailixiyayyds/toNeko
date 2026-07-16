@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record OpenNekoInfoScreenPayload() implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<OpenNekoInfoScreenPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_neko_info_screen"));
+    public static final CustomPacketPayload.Type<OpenNekoInfoScreenPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "open_neko_info_screen"));
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenNekoInfoScreenPayload> CODEC = StreamCodec.unit(new OpenNekoInfoScreenPayload());
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

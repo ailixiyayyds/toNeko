@@ -11,7 +11,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
  * C2S 数据包：玩家请求让头上的乘客下来
  */
 public record DismountPassengerPayload() implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<DismountPassengerPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "dismount_passenger"));
+    public static final CustomPacketPayload.Type<DismountPassengerPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "dismount_passenger"));
     public static final StreamCodec<RegistryFriendlyByteBuf, DismountPassengerPayload> CODEC = StreamCodec.unit(new DismountPassengerPayload());
 
     @Override

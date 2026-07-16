@@ -3,7 +3,6 @@ package org.cneko.toneko.fabric.items;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +18,6 @@ import org.cneko.toneko.common.mod.misc.ToNekoSongs;
 import org.cneko.toneko.common.util.ConfigUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.cneko.toneko.common.mod.items.ToNekoItems.*;
 
@@ -46,12 +44,13 @@ public class ToNekoItems {
         NEKO_POTION = new NekoPotionItem();
         NEKO_COLLECTOR = new NekoCollectorItem();
         FURRY_BOHE = new FurryBoheItem();
-        CATNIP = new CatnipItem(new Item.Properties().component(DataComponents.FOOD,
-                new FoodProperties(2,1.0f,true,1.6f, Optional.empty(),
-                        List.of()
-                )));
-        INFINITE_CATNIP = new CatnipItem.InfiniteCatnipItem(new Item.Properties().component(DataComponents.FOOD,new FoodProperties(2,1.0f,false,1.6f, Optional.empty(),List.of())).rarity(Rarity.UNCOMMON));
-        CATNIP_SANDWICH = new CatnipItem(new Item.Properties().component(DataComponents.FOOD,new FoodProperties(10,12f,false,1.6f, Optional.empty(),List.of())));
+        CATNIP = new CatnipItem(new Item.Properties().food(new FoodProperties.Builder()
+                .nutrition(2).saturationMod(1.0f).alwaysEat().build()));
+        INFINITE_CATNIP = new CatnipItem.InfiniteCatnipItem(new Item.Properties()
+                .food(new FoodProperties.Builder().nutrition(2).saturationMod(1.0f).build())
+                .rarity(Rarity.UNCOMMON));
+        CATNIP_SANDWICH = new CatnipItem(new Item.Properties()
+                .food(new FoodProperties.Builder().nutrition(10).saturationMod(12f).build()));
         CATNIP_SEED = new ItemNameBlockItem(ToNekoBlocks.CATNIP, new Item.Properties());
         MUSIC_DISC_KAWAII = new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ToNekoSongs.KAWAII));
         MUSIC_DISC_NEVER_GONNA_GIVE_YOU_UP = new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(ToNekoSongs.NEVER_GONNA_GIVE_YOU_UP));
@@ -76,14 +75,12 @@ public class ToNekoItems {
         NEKO_ENERGY_BURST = new NekoEnergyBurstItem(2f,3f,50f);
         EVIL_NEKO_ENERGY_BURST = new EvilNekoEnergyBurstItem(2f,3f,50f);
         GENE_EDITOR = new GeneEditorItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
-        GROWTH_TREAT = new GrowthTreatItem(new Item.Properties().component(DataComponents.FOOD,
-                new FoodProperties(4, 2.0f, false, 1.6f, Optional.empty(),
-                        List.of()
-                )).rarity(Rarity.UNCOMMON));
-        DEAGE_TREAT = new DeageTreatItem(new Item.Properties().component(DataComponents.FOOD,
-                new FoodProperties(4, 2.0f, false, 1.6f, Optional.empty(),
-                        List.of()
-                )).rarity(Rarity.UNCOMMON));
+        GROWTH_TREAT = new GrowthTreatItem(new Item.Properties()
+                .food(new FoodProperties.Builder().nutrition(4).saturationMod(2.0f).build())
+                .rarity(Rarity.UNCOMMON));
+        DEAGE_TREAT = new DeageTreatItem(new Item.Properties()
+                .food(new FoodProperties.Builder().nutrition(4).saturationMod(2.0f).build())
+                .rarity(Rarity.UNCOMMON));
         Registry.register(BuiltInRegistries.ITEM, toNekoLoc(NekoPotionItem.ID), NEKO_POTION);
         Registry.register(BuiltInRegistries.ITEM, toNekoLoc(NekoCollectorItem.ID), NEKO_COLLECTOR);
         Registry.register(BuiltInRegistries.ITEM, toNekoLoc(FurryBoheItem.ID), FURRY_BOHE);

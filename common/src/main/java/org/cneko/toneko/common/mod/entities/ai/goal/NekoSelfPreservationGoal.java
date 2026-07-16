@@ -41,10 +41,10 @@ public class NekoSelfPreservationGoal extends Goal {
             // arrived at safe spot, eat
             for (int i = 0; i < neko.getInventory().getContainerSize(); i++) {
                 ItemStack stack = neko.getInventory().getItem(i);
-                if (!stack.isEmpty() && stack.has(net.minecraft.core.component.DataComponents.FOOD)) {
-                    FoodProperties food = stack.get(net.minecraft.core.component.DataComponents.FOOD);
+                if (!stack.isEmpty() && stack.isEdible()) {
+                    FoodProperties food = stack.getItem().getFoodProperties();
                     if (food != null) {
-                        neko.heal(food.nutrition());
+                        neko.heal(food.getNutrition());
                         stack.shrink(1);
                         break;
                     }
@@ -63,7 +63,7 @@ public class NekoSelfPreservationGoal extends Goal {
     private boolean hasFood() {
         for (int i = 0; i < neko.getInventory().getContainerSize(); i++) {
             ItemStack stack = neko.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.has(net.minecraft.core.component.DataComponents.FOOD)) {
+            if (!stack.isEmpty() && stack.isEdible()) {
                 return true;
             }
         }

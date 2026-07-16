@@ -16,7 +16,7 @@ public class NekoBossRenderer<T extends NekoEntity & NekoBoss> extends NekoRende
     public static class NekoBossModel<T extends NekoEntity & NekoBoss> extends NekoModel<T> {
         @Override
         public ResourceLocation getModelResource(T animatable) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"geo/neko/boss/"+animatable.getSkin()+".geo.json"
             );
             if (checkResource(id)){
@@ -27,26 +27,26 @@ public class NekoBossRenderer<T extends NekoEntity & NekoBoss> extends NekoRende
 
         @Override
         public ResourceLocation getTextureResource(T animatable) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"textures/neko/boss/"+animatable.getSkin()+".png"
             );
             if (checkResource(id)){
                 return id;
             }
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"textures/neko/common.png"
             );
         }
 
         @Override
         public ResourceLocation getAnimationResource(T animatable) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"animations/neko/boss/"+animatable.getSkin()+".animation.json"
             );
             if (checkResource(id)){
                 return id;
             }
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"animations/neko/common.animation.json"
             );
         }

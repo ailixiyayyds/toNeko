@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class NekoAggregatorScreen extends AbstractContainerScreen<NekoAggregatorBlock.NekoAggregatorMenu> {
-    private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/crafting_table.png");
+    private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation("textures/gui/container/crafting_table.png");
 
     // 颜色定义
     private static final int COST_COLOR_CONSUME = 0xFFFF5555; // 红色 (-消耗)

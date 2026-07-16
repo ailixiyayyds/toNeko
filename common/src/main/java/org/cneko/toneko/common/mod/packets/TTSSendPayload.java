@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record TTSSendPayload(String text) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<TTSSendPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "tts_send"));
+    public static final CustomPacketPayload.Type<TTSSendPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "tts_send"));
     public static final StreamCodec<RegistryFriendlyByteBuf, TTSSendPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, TTSSendPayload::text,
             TTSSendPayload::new

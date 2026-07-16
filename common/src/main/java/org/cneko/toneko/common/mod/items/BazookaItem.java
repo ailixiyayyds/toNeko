@@ -22,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.cneko.toneko.common.mod.entities.AmmunitionEntity;
 import org.cneko.toneko.common.mod.entities.ToNekoEntities;
-import org.cneko.toneko.common.mod.misc.ToNekoComponents;
 import org.cneko.toneko.common.mod.misc.ToNekoDamageTypes;
 import org.cneko.toneko.common.mod.misc.ToNekoSoundEvents;
 import org.cneko.toneko.common.mod.util.EnchantmentUtil;
@@ -33,8 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BazookaItem extends Item {
+    private static final String AMMUNITION_ID_KEY = "ToNekoAmmunitionId";
     public static final String ID = "bazooka";
-    private static final ResourceLocation EMPTY = ResourceLocation.withDefaultNamespace("empty");
+    private static final ResourceLocation EMPTY = new ResourceLocation("empty");
 
     public BazookaItem(Properties properties) {
         super(properties);
@@ -64,7 +64,8 @@ public class BazookaItem extends Item {
 
     @Nullable
     public Ammunition getAmmunition(ItemStack stack) {
-        ResourceLocation res = stack.getOrDefault(ToNekoComponents.ITEM_ID_COMPONENT, EMPTY);
+        String id = stack.getOrCreateTag().getString(AMMUNITION_ID_KEY);
+        ResourceLocation res = id.isEmpty() ? EMPTY : new ResourceLocation(id);
         Item item = BuiltInRegistries.ITEM.get(res);
         return item instanceof Ammunition am ? am : null;
     }
@@ -150,7 +151,7 @@ public class BazookaItem extends Item {
     public void setAmmunitionType(Item ammoItem, ItemStack bazookaStack) {
         if (ammoItem instanceof Ammunition) {
             ResourceLocation ammoId = BuiltInRegistries.ITEM.getKey(ammoItem);
-            bazookaStack.set(ToNekoComponents.ITEM_ID_COMPONENT, ammoId);
+            bazookaStack.getOrCreateTag().putString(AMMUNITION_ID_KEY, ammoId.toString());
         }
     }
 

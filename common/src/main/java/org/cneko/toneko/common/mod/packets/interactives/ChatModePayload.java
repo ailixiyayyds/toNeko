@@ -13,7 +13,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
  */
 public record ChatModePayload(boolean area) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ChatModePayload> ID =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "chat_mode"));
+            new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "chat_mode"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChatModePayload> CODEC =
             StreamCodec.composite(ByteBufCodecs.BOOL, ChatModePayload::area, ChatModePayload::new);
 

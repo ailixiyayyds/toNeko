@@ -97,7 +97,7 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
         public ResourceLocation getModelResource(T animatable) {
             /*
             // 检查文件是否存在
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"geo/neko/"+animatable.getSkin()+".geo.json"
             );
             if (checkResource(id)){
@@ -107,7 +107,7 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
              * 更好的实现方法应该是getDefaultSkin()
              * 但我觉得...这样似乎更为抽象和有趣(bushi)
              *
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"geo/neko/"+animatable.getRandomSkin()+".geo.json"
             );
             */
@@ -116,13 +116,13 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
 
         @Override
         public ResourceLocation getTextureResource(T animatable) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"textures/neko/"+animatable.getSkin()+".png"
             );
             if (checkResource(id)){
                 return id;
             }
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"textures/neko/"+animatable.getRandomSkin()+".png"
             );
         }
@@ -130,13 +130,13 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
         @Override
         public ResourceLocation getAnimationResource(T animatable) {
             /*
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation id = new ResourceLocation(
                     MODID,"animations/neko/"+animatable.getSkin()+".animation.json"
             );
             if (checkResource(id)){
                 return id;
             }
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"animations/neko/"+animatable.getRandomSkin()+".animation.json"
             );
 

@@ -183,10 +183,10 @@ public class Genome {
                 ChromosomePair pair = new ChromosomePair();
 
                 CompoundTag strandA = pairTag.getCompound("A");
-                strandA.getAllKeys().forEach(k -> pair.strandA.put(ResourceLocation.parse(k), ResourceLocation.parse(strandA.getString(k))));
+                strandA.getAllKeys().forEach(k -> pair.strandA.put(new ResourceLocation(k), new ResourceLocation(strandA.getString(k))));
 
                 CompoundTag strandB = pairTag.getCompound("B");
-                strandB.getAllKeys().forEach(k -> pair.strandB.put(ResourceLocation.parse(k), ResourceLocation.parse(strandB.getString(k))));
+                strandB.getAllKeys().forEach(k -> pair.strandB.put(new ResourceLocation(k), new ResourceLocation(strandB.getString(k))));
 
                 pairs.put(chrId, pair);
             } catch (NumberFormatException ignored) {}

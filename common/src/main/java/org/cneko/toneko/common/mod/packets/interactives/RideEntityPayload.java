@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record RideEntityPayload(String uuid,String vehicleUuid) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<RideEntityPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "neko_entity_interactive_ride_entity"));
+    public static final CustomPacketPayload.Type<RideEntityPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "neko_entity_interactive_ride_entity"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RideEntityPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,RideEntityPayload::uuid,
             ByteBufCodecs.STRING_UTF8,RideEntityPayload::vehicleUuid,

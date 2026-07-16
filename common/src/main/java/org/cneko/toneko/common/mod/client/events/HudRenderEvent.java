@@ -142,7 +142,7 @@ public class HudRenderEvent {
         guiGraphics.drawString(client.font, hint, x, y, 0xAAFFFFFF);
     }
 
-    private static final ResourceLocation CATNIP_ICON = ResourceLocation.fromNamespaceAndPath(MODID,"textures/item/catnip.png");
+    private static final ResourceLocation CATNIP_ICON = new ResourceLocation(MODID,"textures/item/catnip.png");
     public static void renderNekoEnergyBar(GuiGraphics context) {
         Minecraft client = Minecraft.getInstance();
         if (client.options.hideGui) return;

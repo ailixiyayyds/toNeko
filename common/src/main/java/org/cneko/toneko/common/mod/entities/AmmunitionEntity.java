@@ -24,8 +24,8 @@ import org.cneko.toneko.common.mod.misc.ToNekoSoundEvents;
 import org.cneko.toneko.common.mod.util.EnchantmentUtil;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class AmmunitionEntity extends ThrowableProjectile implements GeoEntity {
@@ -44,10 +44,10 @@ public class AmmunitionEntity extends ThrowableProjectile implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(BAZOOKA_STACK, ItemStack.EMPTY);
-        builder.define(AMMUNITION_STACK, ItemStack.EMPTY);
-        builder.define(RETURNING, false);
+    protected void defineSynchedData() {
+        this.entityData.define(BAZOOKA_STACK, ItemStack.EMPTY);
+        this.entityData.define(AMMUNITION_STACK, ItemStack.EMPTY);
+        this.entityData.define(RETURNING, false);
     }
 
     public void setBazookaStack(ItemStack stack) {

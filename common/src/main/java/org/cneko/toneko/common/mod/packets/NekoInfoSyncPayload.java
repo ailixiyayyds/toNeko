@@ -18,7 +18,7 @@ public record NekoInfoSyncPayload(
         boolean isNeko,
         int age
 ) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<NekoInfoSyncPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "neko_info_sync"));
+    public static final CustomPacketPayload.Type<NekoInfoSyncPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "neko_info_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, NekoInfoSyncPayload> CODEC = StreamCodec.of(
             (buf, payload) -> {
                 ByteBufCodecs.FLOAT.encode(buf, payload.energy());

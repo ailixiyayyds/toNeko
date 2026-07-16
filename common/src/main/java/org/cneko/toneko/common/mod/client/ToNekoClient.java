@@ -18,7 +18,7 @@ public class ToNekoClient {
         // 启动Gal
         GalClient.init();
         NekoScreenRegistry.init();
-        FabricLoader.getInstance().getModContainer(MODID).ifPresent(container-> ResourceManagerHelper.registerBuiltinResourcePack(ResourceLocation.fromNamespaceAndPath(MODID, "moe"),container, Component.translatable("resourcePack.toneko.moe"), ResourcePackActivationType.NORMAL));
+        FabricLoader.getInstance().getModContainer(MODID).ifPresent(container-> ResourceManagerHelper.registerBuiltinResourcePack(new ResourceLocation(MODID, "moe"),container, Component.translatable("resourcePack.toneko.moe"), ResourcePackActivationType.NORMAL));
         MenuScreens.register(ToNekoMenuTypes.NEKO_AGGREGATOR, NekoAggregatorScreen::new);
     }
 }

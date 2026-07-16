@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record CrystalNekoNyaPayload(@NotNull String uuid) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<CrystalNekoNyaPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "crystal_neko_nya"));
+    public static final CustomPacketPayload.Type<CrystalNekoNyaPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "crystal_neko_nya"));
     public static final StreamCodec<RegistryFriendlyByteBuf, CrystalNekoNyaPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, CrystalNekoNyaPayload::uuid,
             CrystalNekoNyaPayload::new);

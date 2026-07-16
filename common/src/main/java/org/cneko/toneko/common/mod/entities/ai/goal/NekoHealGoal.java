@@ -38,10 +38,10 @@ public class NekoHealGoal extends Goal {
             // feed the target
             for (int i = 0; i < neko.getInventory().getContainerSize(); i++) {
                 ItemStack stack = neko.getInventory().getItem(i);
-                if (!stack.isEmpty() && stack.has(net.minecraft.core.component.DataComponents.FOOD)) {
-                    FoodProperties food = stack.get(net.minecraft.core.component.DataComponents.FOOD);
+                if (!stack.isEmpty() && stack.isEdible()) {
+                    FoodProperties food = stack.getItem().getFoodProperties();
                     if (food != null) {
-                        target.heal(food.nutrition());
+                        target.heal(food.getNutrition());
                         stack.shrink(1);
                         // heart particles
                         neko.level().addParticle(ParticleTypes.HEART,
@@ -82,7 +82,7 @@ public class NekoHealGoal extends Goal {
     private boolean hasFood() {
         for (int i = 0; i < neko.getInventory().getContainerSize(); i++) {
             ItemStack stack = neko.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.has(net.minecraft.core.component.DataComponents.FOOD)) {
+            if (!stack.isEmpty() && stack.isEdible()) {
                 return true;
             }
         }

@@ -38,7 +38,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.NEKO_EARS, // 以猫耳朵作为图标
                         translatable("advancements.toneko.root.title"),
                         translatable("advancements.toneko.root.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
@@ -51,7 +51,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.NEKO_POTION, // 以猫娘药水作为图标
                         translatable("advancements.toneko.got_neko_potion.title"),
                         translatable("advancements.toneko.got_neko_potion.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
@@ -65,7 +65,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.NEKO_EARS,
                         translatable("advancements.toneko.neko_armor.title"),
                         translatable("advancements.toneko.neko_armor.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true, // 获得发送到聊天
@@ -79,7 +79,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.CATNIP,
                         translatable("advancements.toneko.catnip.title"),
                         translatable("advancements.toneko.catnip.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true, // 获得时显示在屏幕右上
                         true,
@@ -94,7 +94,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.CATNIP_SANDWICH,
                         translatable("advancements.toneko.first_gift.title"),
                         translatable("advancements.toneko.first_gift.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true,
                         true,
@@ -109,7 +109,7 @@ public class AdvancementsProvider extends FabricAdvancementProvider {
                         ToNekoItems.NEKO_TAIL,
                         translatable("advancements.toneko.neko_lv100.title"),
                         translatable("advancements.toneko.neko_lv100.description"),
-                        ResourceLocation.parse("textures/gui/advancements/backgrounds/adventure.png"),
+                        new ResourceLocation("textures/gui/advancements/backgrounds/adventure.png"),
                         AdvancementType.GOAL,
                         true,
                         true,

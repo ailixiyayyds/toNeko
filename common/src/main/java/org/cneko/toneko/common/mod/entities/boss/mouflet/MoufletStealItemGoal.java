@@ -1,6 +1,5 @@
 package org.cneko.toneko.common.mod.entities.boss.mouflet;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -86,7 +85,7 @@ public class MoufletStealItemGoal extends Goal {
                 if (boss.isPetMode() && boss.hasOwner(player.getUUID())) continue;
                 for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                     ItemStack stack = player.getInventory().getItem(i);
-                    if (!stack.isEmpty() && stack.has(DataComponents.FOOD)) {
+                    if (!stack.isEmpty() && stack.isEdible()) {
                         boss.eatOrStoreFood(stack);
                         player.getInventory().removeItem(i, 1);
                         lastStealFoodTime = boss.level().getGameTime();

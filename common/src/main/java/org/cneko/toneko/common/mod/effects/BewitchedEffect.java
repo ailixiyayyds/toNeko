@@ -13,7 +13,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public class BewitchedEffect extends MobEffect {
     public static final String ID = "bewitched";
-    public static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, ID);
+    public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
 
     public BewitchedEffect() {
         super(MobEffectCategory.HARMFUL, 0xFFB6C1);

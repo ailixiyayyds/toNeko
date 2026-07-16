@@ -13,7 +13,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public class HissIntimidationEffect extends MobEffect {
     public static final String ID = "hiss_intimidation";
-    public static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, ID);
+    public static final ResourceLocation LOCATION = new ResourceLocation(MODID, ID);
 
     public HissIntimidationEffect() {
         super(MobEffectCategory.HARMFUL, 0xFFFFFF);

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record PlayerLeadByPlayerPayload(String holder,String target) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<PlayerLeadByPlayerPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "player_lead_by_player"));
+    public static final CustomPacketPayload.Type<PlayerLeadByPlayerPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "player_lead_by_player"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerLeadByPlayerPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, PlayerLeadByPlayerPayload::holder,
             ByteBufCodecs.STRING_UTF8, PlayerLeadByPlayerPayload::target,

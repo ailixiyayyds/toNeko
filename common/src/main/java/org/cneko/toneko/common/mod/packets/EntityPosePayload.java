@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public record EntityPosePayload(@NotNull Pose pose, @Nullable String uuid , boolean status) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<EntityPosePayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "entity_set_pose"));
+    public static final CustomPacketPayload.Type<EntityPosePayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "entity_set_pose"));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityPosePayload> CODEC = StreamCodec.composite(
             Pose.STREAM_CODEC, EntityPosePayload::pose,
             ByteBufCodecs.STRING_UTF8, EntityPosePayload::uuid,

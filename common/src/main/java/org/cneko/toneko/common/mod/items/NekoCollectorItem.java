@@ -12,23 +12,39 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.cneko.toneko.common.mod.codecs.CountCodecs;
 import org.cneko.toneko.common.mod.entities.INeko;
-import org.cneko.toneko.common.mod.misc.ToNekoComponents;
 import org.cneko.toneko.common.mod.misc.ToNekoAttributes;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class NekoCollectorItem extends Item {
     public static String ID = "neko_collector";
     public static CountCodecs.FloatCountCodec DEFAULT_NEKO_PROGRESS_COMPONENT = new CountCodecs.FloatCountCodec(0.0f, 5000.0f);
+    private static final String PROGRESS_KEY = "ToNekoProgress";
+    private static final String MAX_PROGRESS_KEY = "ToNekoMaxProgress";
     public NekoCollectorItem() {
-        super(new Properties().stacksTo(1).component(ToNekoComponents.NEKO_PROGRESS_COMPONENT, DEFAULT_NEKO_PROGRESS_COMPONENT));
+        super(new Properties().stacksTo(1));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
-        float count = stack.getOrDefault(ToNekoComponents.NEKO_PROGRESS_COMPONENT, DEFAULT_NEKO_PROGRESS_COMPONENT).getCount();
-        float maxCount = stack.getOrDefault(ToNekoComponents.NEKO_PROGRESS_COMPONENT, DEFAULT_NEKO_PROGRESS_COMPONENT).getMaxCount();
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag type) {
+        float count = getProgress(stack);
+        float maxCount = getMaxProgress(stack);
         tooltip.add(Component.translatable("item.toneko.neko_collector.info", count, maxCount).withStyle(ChatFormatting.GREEN));
+    }
+
+    private static float getProgress(ItemStack stack) {
+        return stack.getOrCreateTag().getFloat(PROGRESS_KEY);
+    }
+
+    private static float getMaxProgress(ItemStack stack) {
+        float value = stack.getOrCreateTag().getFloat(MAX_PROGRESS_KEY);
+        return value > 0 ? value : DEFAULT_NEKO_PROGRESS_COMPONENT.getMaxCount();
+    }
+
+    private static void setProgress(ItemStack stack, float count, float maxCount) {
+        stack.getOrCreateTag().putFloat(PROGRESS_KEY, count);
+        stack.getOrCreateTag().putFloat(MAX_PROGRESS_KEY, maxCount);
     }
 
     @Override
@@ -50,15 +66,15 @@ public class NekoCollectorItem extends Item {
         // 获取玩家的 属性附加值/100 + 1
         double neko_degree_addition = player.getAttributes().getValue(ToNekoAttributes.NEKO_DEGREE) / 100.0 + 1;
         // 原来的 count + 猫猫数量/100*neko_degree_addition
-        float count = (float) (stack.getOrDefault(ToNekoComponents.NEKO_PROGRESS_COMPONENT, DEFAULT_NEKO_PROGRESS_COMPONENT).getCount() + catCount / 100.0f * neko_degree_addition);
+        float count = (float) (getProgress(stack) + catCount / 100.0f * neko_degree_addition);
         // 原来的maxCount
-        float maxCount = stack.getOrDefault(ToNekoComponents.NEKO_PROGRESS_COMPONENT, DEFAULT_NEKO_PROGRESS_COMPONENT).getMaxCount();
+        float maxCount = getMaxProgress(stack);
         // 如果count >= maxCount，则清零并掉落一瓶猫娘药水
         if (count >= maxCount) {
-            stack.set(ToNekoComponents.NEKO_PROGRESS_COMPONENT, new CountCodecs.FloatCountCodec(0.0f, maxCount));
+            setProgress(stack, 0.0f, maxCount);
             entity.spawnAtLocation(ToNekoItems.NEKO_POTION);
         }else {
-            stack.set(ToNekoComponents.NEKO_PROGRESS_COMPONENT, new CountCodecs.FloatCountCodec(count, maxCount));
+            setProgress(stack, count, maxCount);
         }
 
 

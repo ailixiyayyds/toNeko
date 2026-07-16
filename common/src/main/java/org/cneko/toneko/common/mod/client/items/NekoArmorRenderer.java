@@ -6,12 +6,10 @@ import com.mojang.math.Axis;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.DyedItemColor;
 import org.cneko.toneko.common.mod.misc.ToNekoEnchantments;
 import org.cneko.toneko.common.mod.util.EnchantmentUtil;
 import org.cneko.toneko.common.mod.items.NekoArmor;
@@ -26,7 +24,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<T>{
 
     public NekoArmorRenderer() {
-        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(MODID, "armor/neko_armor")));
+        super(new DefaultedItemGeoModel<>(new ResourceLocation(MODID, "armor/neko_armor")));
     }
 
     @Override
@@ -51,7 +49,8 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
         // 染色
         try {
             // 如果有染色
-            if (this.currentStack.has(DataComponents.DYED_COLOR)) {
+            if (this.currentStack.hasTag() && this.currentStack.getTag().contains("display", 10)
+                    && this.currentStack.getTag().getCompound("display").contains("color", 3)) {
                 // 物品的染色rgb
                 Color renderColor = this.getRenderColor(animatable, partialTick, packedLight);
 
@@ -70,7 +69,11 @@ public class NekoArmorRenderer<T extends NekoArmor<T>> extends GeoArmorRenderer<
     @Override
     public Color getRenderColor(T animatable, float partialTick, int packedLight) {
         // 默认为浅蓝色
-        return Color.ofOpaque(DyedItemColor.getOrDefault(this.currentStack, 6463722));
+        int color = 6463722;
+        if (this.currentStack.hasTag() && this.currentStack.getTag().contains("display", 10)) {
+            color = this.currentStack.getTag().getCompound("display").getInt("color");
+        }
+        return Color.ofOpaque(color);
     }
     public void setItemStack(ItemStack stack){
         this.currentStack = stack;

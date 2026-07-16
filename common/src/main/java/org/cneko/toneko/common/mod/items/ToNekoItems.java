@@ -44,6 +44,6 @@ public class ToNekoItems {
     public static Item GROWTH_TREAT;
     public static Item DEAGE_TREAT;
 
-    public static final TagKey<Item> CATNIP_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c","foods/catnip"));
+    public static final TagKey<Item> CATNIP_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("c","foods/catnip"));
     public static final TagKey<Item> BAZOOKA_AMMO_TAG = TagKey.create(Registries.ITEM, toNekoLoc("bazooka_ammo"));
 }

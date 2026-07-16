@@ -16,7 +16,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
  */
 public record ChatHistoryResponsePayload(String nekoUuid, List<String> messages) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ChatHistoryResponsePayload> ID =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "chat_history_response"));
+            new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "chat_history_response"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChatHistoryResponsePayload> CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.STRING_UTF8, ChatHistoryResponsePayload::nekoUuid,

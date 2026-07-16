@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record GiftItemPayload(String uuid, int slot) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<GiftItemPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "neko_entity_interactive_gift_item"));
+    public static final CustomPacketPayload.Type<GiftItemPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "neko_entity_interactive_gift_item"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GiftItemPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,GiftItemPayload::uuid,
             ByteBufCodecs.INT,GiftItemPayload::slot,

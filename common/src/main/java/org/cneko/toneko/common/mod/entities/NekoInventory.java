@@ -8,7 +8,6 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -114,7 +113,7 @@ public class NekoInventory implements Container, Nameable {
     public int findSlotMatchingUnusedItem(ItemStack stack) {
         for(int i = 0; i < this.items.size(); ++i) {
             ItemStack itemStack = this.items.get(i);
-            if (!itemStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack) && !itemStack.isDamaged() && !itemStack.isEnchanted() && !itemStack.has(DataComponents.CUSTOM_NAME)) {
+            if (!itemStack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemStack) && !itemStack.isDamaged() && !itemStack.isEnchanted() && !itemStack.hasCustomHoverName()) {
                 return i;
             }
         }

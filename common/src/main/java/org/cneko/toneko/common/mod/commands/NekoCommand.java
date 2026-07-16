@@ -6,7 +6,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemLore;
 import org.cneko.toneko.common.api.Permissions;
 import org.cneko.toneko.common.mod.api.EntityPoseManager;
 import org.cneko.toneko.common.mod.entities.INeko;
@@ -209,10 +209,10 @@ public class NekoCommand {
             }
             String lore = StringArgumentType.getString(context, "lore");
             Component text = Component.nullToEmpty(lore);
-            List<Component> loreList = new ArrayList<>();
-            loreList.add(text);
+            ListTag loreList = new ListTag();
+            loreList.add(StringTag.valueOf(Component.Serializer.toJson(text)));
             // 给物品添加lore
-            stack.set(DataComponents.LORE,new ItemLore(loreList));
+            stack.getOrCreateTagElement("display").put("Lore", loreList);
         }
         return 1;
     }

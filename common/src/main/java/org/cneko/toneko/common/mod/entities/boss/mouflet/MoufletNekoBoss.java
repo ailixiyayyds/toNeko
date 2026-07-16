@@ -1,7 +1,6 @@
 package org.cneko.toneko.common.mod.entities.boss.mouflet;
 
 import lombok.Getter;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
@@ -772,7 +771,7 @@ public class MoufletNekoBoss extends NekoEntity implements NekoBoss, PlayerRidea
         // 偷食物
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.has(DataComponents.FOOD)) {
+            if (!stack.isEmpty() && stack.isEdible()) {
                 this.eatOrStoreFood(stack);
                 player.getInventory().removeItem(i, 1);
                 break;

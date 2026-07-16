@@ -28,8 +28,8 @@ import static org.cneko.toneko.common.mod.util.ResourceLocationUtil.toNekoLoc;
 
 public class FightingNekoEntity extends NekoEntity{
     public static final TagKey<Item> NEKO_WEAPON = TagKey.create(Registries.ITEM,toNekoLoc("neko/weapon"));
-    public static final TagKey<Item> MELEE_WEAPON = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c","tools/melee_weapon"));
-    public static final TagKey<Item> RANGED_WEAPON = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c","tools/ranged_weapon"));
+    public static final TagKey<Item> MELEE_WEAPON = TagKey.create(Registries.ITEM, new ResourceLocation("c","tools/melee_weapon"));
+    public static final TagKey<Item> RANGED_WEAPON = TagKey.create(Registries.ITEM, new ResourceLocation("c","tools/ranged_weapon"));
 
     public static final List<String> NEKO_SKINS = List.of(
             "ronin","miruu","muineow","myrrka","peelll"

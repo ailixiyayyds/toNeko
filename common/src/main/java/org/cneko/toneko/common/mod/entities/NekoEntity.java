@@ -3,7 +3,6 @@ package org.cneko.toneko.common.mod.entities;
 import lombok.Getter;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -66,10 +65,10 @@ import org.cneko.toneko.common.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.constant.DefaultAnimations;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -211,16 +210,16 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
 
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(SKIN_DATA_ID, this.getDefaultSkin());
-        builder.define(MOE_TAGS_ID, "");
-        builder.define(GATHERING_POWER_ID, 0);
-        builder.define(NEKO_ENERGY_ID, 0f);
-        builder.define(NEKO_LEVEL_ID, 0f);
-        builder.define(NICKNAME_ID, "");
-        builder.define(CHEST_SCALE_ID, 1.0f);
-        builder.define(AGE_SCALE_ID, 1.0f);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(SKIN_DATA_ID, this.getDefaultSkin());
+        this.entityData.define(MOE_TAGS_ID, "");
+        this.entityData.define(GATHERING_POWER_ID, 0);
+        this.entityData.define(NEKO_ENERGY_ID, 0f);
+        this.entityData.define(NEKO_LEVEL_ID, 0f);
+        this.entityData.define(NICKNAME_ID, "");
+        this.entityData.define(CHEST_SCALE_ID, 1.0f);
+        this.entityData.define(AGE_SCALE_ID, 1.0f);
     }
 
 
@@ -413,7 +412,7 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
     // 是否喜欢这个物品
     public boolean isLikedItem(ItemStack stack){
         return isFavoriteItem(stack)
-                || stack.has(DataComponents.FOOD)
+                || stack.isEdible()
                 || stack.is(NEKO_ARMOR)
                 || stack.is(Items.TOTEM_OF_UNDYING);
     }
@@ -533,10 +532,10 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
             return true;
         }
         // 如果是食物，则吃掉回血并获取对应的效果
-        FoodProperties food = stack.getItem().components().get(DataComponents.FOOD);
-        if (food!=null && (this.getHealth() < this.getMaxHealth() || !food.effects().isEmpty())){
+        FoodProperties food = stack.getItem().getFoodProperties();
+        if (food!=null && (this.getHealth() < this.getMaxHealth() || !food.getEffects().isEmpty())){
             // 回血
-            this.heal(food.nutrition());
+            this.heal(food.getNutrition());
             this.eat(this.level(), stack);
         }
         // 否则放入背包
@@ -1140,10 +1139,10 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
         if (currentTick - this.lastFoodHealTick >= FOOD_HEAL_COOLDOWN) {
             for (ItemStack stack : this.getInventory().items){
                 // 如果是食物，则吃掉回血并获取对应的效果
-                FoodProperties food = stack.getItem().components().get(DataComponents.FOOD);
-                if (food!=null && (this.getHealth() < this.getMaxHealth() || !food.effects().isEmpty())){
+                FoodProperties food = stack.getItem().getFoodProperties();
+                if (food!=null && (this.getHealth() < this.getMaxHealth() || !food.getEffects().isEmpty())){
                     // 回血
-                    this.heal(food.nutrition());
+                    this.heal(food.getNutrition());
                     this.eat(this.level(), stack);
                     stack.shrink(1);
                     this.lastFoodHealTick = currentTick;
@@ -1391,14 +1390,14 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
     }
 
     public boolean eatOrStoreFood(ItemStack stack){
-        if (stack.isEmpty() || !stack.has(DataComponents.FOOD)) {
+        if (stack.isEmpty() || !stack.isEdible()) {
             // 不处理
             return false;
         }
-        FoodProperties food = stack.getItem().components().get(DataComponents.FOOD);
+        FoodProperties food = stack.getItem().getFoodProperties();
         if (food != null){
-            if(this.getHealth() < this.getMaxHealth() || !food.effects().isEmpty()){
-                this.heal(food.nutrition());
+            if(this.getHealth() < this.getMaxHealth() || !food.getEffects().isEmpty()){
+                this.heal(food.getNutrition());
                 this.eat(this.level(), stack);
             }else {
                 if (this.getInventory().isFull()) return false;

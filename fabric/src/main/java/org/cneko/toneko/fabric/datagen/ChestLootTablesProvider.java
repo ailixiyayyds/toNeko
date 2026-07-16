@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public class ChestLootTablesProvider extends SimpleFabricLootTableProvider {
-    public static final ResourceLocation NEKO_CHEST = ResourceLocation.fromNamespaceAndPath(MODID, "chests/neko_loot");
+    public static final ResourceLocation NEKO_CHEST = new ResourceLocation(MODID, "chests/neko_loot");
     public ChestLootTablesProvider(FabricDataOutput output) {
         super(output, getWrapperLookup(), LootContextParamSets.CHEST);
 

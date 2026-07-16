@@ -2,8 +2,9 @@ package org.cneko.toneko.common.mod.mixin;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ItemLore;
 import org.cneko.toneko.common.mod.api.EntityPoseManager;
 import org.cneko.toneko.common.mod.api.NekoLevelRegistry;
 import org.cneko.toneko.common.mod.entities.INeko;
@@ -260,7 +260,9 @@ public abstract class PlayerEntityMixin implements INeko, Leashable, SlowTickabl
                 player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
                 ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, player, Items.MILK_BUCKET.getDefaultInstance());
                 // 显示来源
-                itemStack2.set(DataComponents.LORE, new ItemLore(Collections.singletonList(Component.translatable("item.minecraft.milk_bucket.source", neko.getEntity().getName()).withStyle(ChatFormatting.LIGHT_PURPLE))));
+                ListTag lore = new ListTag();
+                lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.translatable("item.minecraft.milk_bucket.source", neko.getEntity().getName()).withStyle(ChatFormatting.LIGHT_PURPLE))));
+                itemStack2.getOrCreateTagElement("display").put("Lore", lore);
                 player.setItemInHand(hand, itemStack2);
                 cir.setReturnValue(InteractionResult.sidedSuccess(player.level().isClientSide));
                 cir.cancel();

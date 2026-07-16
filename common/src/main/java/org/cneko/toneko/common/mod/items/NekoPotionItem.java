@@ -1,7 +1,6 @@
 package org.cneko.toneko.common.mod.items;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -35,7 +34,7 @@ public class NekoPotionItem extends PotionItem {
     public @NotNull ItemStack getDefaultInstance() {
         ItemStack stack = new ItemStack(this);
         // 确保含有空的 PotionContents，避免其他代码直接取出时为 null
-        stack.set(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        PotionUtils.setPotion(stack, Potions.EMPTY);
         return stack;
     }
     public void toneko(Level world, Player neko, InteractionHand hand) {

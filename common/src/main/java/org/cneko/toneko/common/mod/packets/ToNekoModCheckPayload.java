@@ -13,7 +13,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
  * @param status 这个随便写
  */
 public record ToNekoModCheckPayload(boolean status) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ToNekoModCheckPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "mod_check"));
+    public static final CustomPacketPayload.Type<ToNekoModCheckPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "mod_check"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ToNekoModCheckPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, ToNekoModCheckPayload::status,
             ToNekoModCheckPayload::new

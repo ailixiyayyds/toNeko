@@ -116,7 +116,7 @@ public class GeneticsScreen extends Screen {
         displayAlleles.clear();
         if (editingLocus == null) return;
 
-        ResourceLocation locusId = ResourceLocation.parse(editingLocus);
+        ResourceLocation locusId = new ResourceLocation(editingLocus);
 
         if (showAllAllelesMode) {
             // 全量模式：显示所有已注册基因

@@ -28,21 +28,21 @@ public class AmmunitionRenderer extends GeoEntityRenderer<AmmunitionEntity> {
 
         @Override
         public ResourceLocation getModelResource(AmmunitionEntity ammunitionEntity) {
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"geo/neko/crystal_neko.geo.json"
             );
         }
 
         @Override
         public ResourceLocation getTextureResource(AmmunitionEntity ammunitionEntity) {
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"textures/neko/crystal_neko.png"
             );
         }
 
         @Override
         public ResourceLocation getAnimationResource(AmmunitionEntity ammunitionEntity) {
-            return ResourceLocation.fromNamespaceAndPath(
+            return new ResourceLocation(
                     MODID,"animations/neko/crystal_neko.animation.json"
             );
         }

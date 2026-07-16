@@ -11,7 +11,7 @@ import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record PluginDetectPayload(String installed) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<PluginDetectPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "detect"));
+    public static final CustomPacketPayload.Type<PluginDetectPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "detect"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PluginDetectPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, PluginDetectPayload::installed,
             PluginDetectPayload::new

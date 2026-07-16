@@ -109,7 +109,7 @@ public class Allele {
 
     // 生成唯一的 Modifier ID，格式例如： toneko:genetic_locusid_modifiername
     private ResourceLocation getDynamicModifierId(ResourceLocation locusId, String suffix) {
-        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+        return new ResourceLocation(id.getNamespace(),
                 "genetic_" + locusId.getPath() + "_" + suffix);
     }
 

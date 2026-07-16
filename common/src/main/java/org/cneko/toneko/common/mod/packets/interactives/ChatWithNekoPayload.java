@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record ChatWithNekoPayload(String uuid, String message) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ChatWithNekoPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "chat_with_neko_entity"));
+    public static final CustomPacketPayload.Type<ChatWithNekoPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "chat_with_neko_entity"));
     public static final StreamCodec<RegistryFriendlyByteBuf,ChatWithNekoPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,ChatWithNekoPayload::uuid,
             ByteBufCodecs.STRING_UTF8,ChatWithNekoPayload::message,

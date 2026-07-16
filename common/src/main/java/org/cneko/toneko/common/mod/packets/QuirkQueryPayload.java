@@ -12,7 +12,7 @@ import java.util.List;
 import static org.cneko.toneko.common.Bootstrap.MODID;
 
 public record QuirkQueryPayload(List<String> quirks,List<String> allQuirks,boolean openScreen) implements CustomPacketPayload{
-    public static final CustomPacketPayload.Type<QuirkQueryPayload> ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "quirk_query"));
+    public static final CustomPacketPayload.Type<QuirkQueryPayload> ID = new CustomPacketPayload.Type<>(new ResourceLocation(MODID, "quirk_query"));
     public static final StreamCodec<RegistryFriendlyByteBuf, QuirkQueryPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), QuirkQueryPayload::getQuirks,
             ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), QuirkQueryPayload::getAllQuirks,
