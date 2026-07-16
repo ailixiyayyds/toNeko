@@ -11,4 +11,3 @@ rootProject.name = 'toneko'
 
 include 'common'
 include 'fabric'
-include 'neoforge'
