@@ -99,12 +99,8 @@ public class NekoAggregatorInput implements Container {
         return (ItemStack)this.items.get(row + column * this.width);
     }
 
-    public int size() {
-        return this.items.size();
-    }
-
     @Override
-    public int getContainerSize() { return size(); }
+    public int getContainerSize() { return this.items.size(); }
 
     @Override
     public ItemStack removeItem(int slot, int amount) { return ItemStack.EMPTY; }
