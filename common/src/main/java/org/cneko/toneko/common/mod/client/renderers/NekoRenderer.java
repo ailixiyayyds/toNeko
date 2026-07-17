@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.Pose;
@@ -39,6 +40,10 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
 
     @Override
     public void preRender(PoseStack poseStack, T animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        float entityScale = (float) animatable.getAttributeValue(org.cneko.toneko.common.mod.misc.ToNekoAttributes.SCALE);
+        if (Float.isFinite(entityScale) && Math.abs(entityScale - 1.0F) > 0.0001F) {
+            poseStack.scale(entityScale, entityScale, entityScale);
+        }
         if (animatable.isNekoBaby()){
             poseStack.scale(0.5F, 0.5F, 0.5F); // 将幼年实体的尺寸缩小为原来的一半
         }
@@ -60,6 +65,8 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
         // 根据基因表达缩放胸部骨骼
         if (bone.getName().equals("chest")) {
             float scale = animatable.getChestScale();
+            if (!Float.isFinite(scale)) scale = 1.0F;
+            scale = Mth.clamp(scale, 0.0F, 2.0F);
             bone.setScaleX(scale);
             bone.setScaleY(scale);
             bone.setScaleZ(scale);
@@ -67,12 +74,14 @@ public class NekoRenderer<T extends NekoEntity> extends GeoEntityRenderer<T> {
 
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
-        if (bone.getName().equals("RightArm")) {
+        // Disabled on the 1.20.1 compatibility branch: the upstream 1.21
+        // bone-space item transform corrupts the pose matrix under GeckoLib 4.4.
+        if (false && bone.getName().equals("RightArm")) {
             ItemStack mainHandItem = animatable.getItemInHand();
             if (!mainHandItem.isEmpty()) {
                 poseStack.pushPose();
                 // 应用骨骼变换
-                poseStack.last().pose().mul(bone.getModelSpaceMatrix());
+                poseStack.mulPoseMatrix(bone.getModelSpaceMatrix());
                 // 调整物品位置
                 poseStack.translate(0.1, -0.6, -0.1);
 

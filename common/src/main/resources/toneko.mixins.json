@@ -11,6 +11,7 @@
   "mixins": [
     "CatEntityMixin",
     "EntityMixin",
+    "LivingEntityScaleMixin",
     "PlayerEntityMixin",
     "ServerLevelMixin",
     "ServerPlayerEntityMixin"

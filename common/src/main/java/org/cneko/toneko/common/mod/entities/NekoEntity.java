@@ -180,6 +180,7 @@ public abstract class NekoEntity extends AgeableMob implements GeoEntity, INeko,
         }
 
         EntityUtil.randomizeAttributeValue(this, ToNekoAttributes.SCALE,1,0.65,1.05); // 实体的体型为0.65~1.05间
+        this.refreshDimensions();
         EntityUtil.randomizeAttributeValue(this, Attributes.MOVEMENT_SPEED,0.7,0.5,0.6); // 实体速度为0.5~0.6间
 
         // 随机皮肤（仅在未被基因系统等修改过时生效）

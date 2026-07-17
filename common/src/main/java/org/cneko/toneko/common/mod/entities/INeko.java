@@ -280,6 +280,7 @@ public interface INeko {
                 this.getNekoAgeScale() - 1.0,
                 AttributeModifier.Operation.MULTIPLY_TOTAL
         );
+        this.getEntity().refreshDimensions();
     }
 
     static void applyModifier(AttributeInstance attr, ResourceLocation id, double bonus) {
