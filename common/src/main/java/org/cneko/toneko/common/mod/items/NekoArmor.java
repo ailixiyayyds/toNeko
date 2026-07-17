@@ -27,10 +27,16 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.lang.reflect.Method;
 
 public abstract class NekoArmor<N extends Item & GeoItem> extends DyeableArmorItem implements GeoItem {
     public final AnimatableInstanceCache cache;
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    /*
+     * GeckoLib 4.4 exposes GeoItem.makeRenderer, while GeckoLib 4.8 removed
+     * that helper. Resolve it reflectively so the Fabric build keeps its armor
+     * renderer and Connector can still load this class against Forge GeckoLib.
+     */
+    private final Supplier<Object> renderProvider = createRenderProvider();
     public NekoArmor(ArmorMaterial material, Type type, Properties settings) {
         super(material, type, settings);
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
@@ -65,6 +71,20 @@ public abstract class NekoArmor<N extends Item & GeoItem> extends DyeableArmorIt
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Supplier<Object> createRenderProvider() {
+        try {
+            Method factory = GeoItem.class.getMethod("makeRenderer", GeoItem.class);
+            Object provider = factory.invoke(null, this);
+            if (provider instanceof Supplier<?>) {
+                return (Supplier<Object>) provider;
+            }
+        } catch (ReflectiveOperationException ignored) {
+            // GeckoLib 4.8+: armor rendering is provided by its newer API.
+        }
+        return () -> null;
     }
 
     @Override
