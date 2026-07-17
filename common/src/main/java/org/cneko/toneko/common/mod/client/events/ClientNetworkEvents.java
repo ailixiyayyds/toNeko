@@ -70,7 +70,10 @@ public class ClientNetworkEvents {
         })));
 
         ToNekoClientNetworking.registerS2C(NekoInfoSyncPayload.ID, NekoInfoSyncPayload::read,(payload,context)-> context.client().execute(()->{
-            Player player = context.player();
+            Player player = context.client().player;
+            if (player == null) {
+                return;
+            }
             player.setNekoEnergy(payload.energy());
             org.cneko.toneko.common.mod.entities.INeko neko = (org.cneko.toneko.common.mod.entities.INeko) player;
             neko.setNeko(payload.isNeko());
