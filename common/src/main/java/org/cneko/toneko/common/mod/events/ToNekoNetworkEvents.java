@@ -127,29 +127,39 @@ public class ToNekoNetworkEvents {
                 ServerPlayer player = context.player();
                 String nekoUuid = neko.getUUID().toString();
                 String playerUuid = player.getUUID().toString();
-                AIUtil.sendMessage(neko.getUUID(), player.getUUID(), neko.generateAIPrompt(context.player()), payload.message(), response -> {
+                String prompt = neko.generateAIPrompt(player);
+                AIUtil.sendMessage(neko.getUUID(), player.getUUID(), prompt, payload.message(), response -> {
+                    // AIUtil invokes callbacks on its worker pool. Minecraft entity, chat,
+                    // task, and networking APIs must only be touched on the server thread.
+                    if (player.getServer() == null) return;
+                    player.getServer().execute(() -> {
+                    if (player.isRemoved() || neko.isRemoved()) return;
+                    String responseText = response != null && response.getResponse() != null
+                            ? response.getResponse() : "AI service returned an empty response.";
                     Runnable sendHistory = () -> pushChatHistory(player, nekoUuid, playerUuid);
-                    if (ConfigUtil.isAIShowThink() && response.hasThink()){
+                    if (ConfigUtil.isAIShowThink() && response != null && response.hasThink()){
                         ServerLevel world = (ServerLevel) neko.level();
                         int totalDelay = spawnFloatingText(neko, response, world);
                         TickTaskQueue task = new TickTaskQueue();
                         task.addTask(totalDelay, () -> {
-                            String r = Messaging.format(response.getResponse(), neko,
+                            if (player.isRemoved() || neko.isRemoved()) return;
+                            String r = Messaging.format(responseText, neko,
                                     Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
                             player.sendSystemMessage(Component.literal(r));
-                            player.getServer().execute(sendHistory);
+                            sendHistory.run();
                         });
                         TickTasks.add(task);
                     } else {
-                        String r = Messaging.format(response.getResponse(), neko,
+                        String r = Messaging.format(responseText, neko,
                                 Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
-                        context.player().sendSystemMessage(Component.literal(r));
-                        player.getServer().execute(sendHistory);
+                        player.sendSystemMessage(Component.literal(r));
+                        sendHistory.run();
                     }
-                    // 如果启用了TTS
+                    // If TTS is enabled, send the response only after returning to the server thread.
                     if (ConfigUtil.isAITTSEnabled()){
-                        ToNekoNetworking.send(player, new TTSSendPayload(response.getResponse()));
+                        ToNekoNetworking.send(player, new TTSSendPayload(responseText));
                     }
+                    });
                 });
             }
         });

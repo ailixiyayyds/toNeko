@@ -309,10 +309,17 @@ public class NekoCommand {
             return 1;
         }
 
-        AIUtil.sendMessage(neko.getUUID(), player.getUUID(), neko.generateAIPrompt(player), message, response -> {
-            String r = Messaging.format(response.getResponse(), neko,
-                    Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
-            player.sendSystemMessage(Component.literal(r));
+        String prompt = neko.generateAIPrompt(player);
+        AIUtil.sendMessage(neko.getUUID(), player.getUUID(), prompt, message, response -> {
+            if (player.getServer() == null) return;
+            player.getServer().execute(() -> {
+                if (player.isRemoved() || neko.isRemoved()) return;
+                String text = response != null && response.getResponse() != null
+                        ? response.getResponse() : "AI service returned an empty response.";
+                String r = Messaging.format(text, neko,
+                        Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
+                player.sendSystemMessage(Component.literal(r));
+            });
         });
         return 1;
     }

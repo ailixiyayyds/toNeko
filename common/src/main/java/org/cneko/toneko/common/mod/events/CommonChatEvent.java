@@ -81,10 +81,17 @@ public class CommonChatEvent {
         NekoEntity neko = EntityUtil.findNearestNekoEntity(sender, sender.level(), (float) NEKO_AI_RANGE);
         if (neko == null) return;
 
-        AIUtil.sendMessage(neko.getUUID(), sender.getUUID(), neko.generateAIPrompt(sender), message, response -> {
-            String r = Messaging.format(response.getResponse(), neko,
-                    Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
-            sender.sendSystemMessage(Component.literal(r));
+        String prompt = neko.generateAIPrompt(sender);
+        AIUtil.sendMessage(neko.getUUID(), sender.getUUID(), prompt, message, response -> {
+            if (sender.getServer() == null) return;
+            sender.getServer().execute(() -> {
+                if (sender.isRemoved() || neko.isRemoved()) return;
+                String text = response != null && response.getResponse() != null
+                        ? response.getResponse() : "AI service returned an empty response.";
+                String r = Messaging.format(text, neko,
+                        Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
+                sender.sendSystemMessage(Component.literal(r));
+            });
         });
     }
 
@@ -102,10 +109,17 @@ public class CommonChatEvent {
         NekoEntity neko = EntityUtil.findNearestNekoEntity(sender, sender.level(), (float) NEKO_AI_RANGE);
         if (neko == null) return;
 
-        AIUtil.sendMessage(neko.getUUID(), sender.getUUID(), neko.generateAIPrompt(sender), aiMessage, response -> {
-            String r = Messaging.format(response.getResponse(), neko,
-                    Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
-            sender.sendSystemMessage(Component.literal(r));
+        String prompt = neko.generateAIPrompt(sender);
+        AIUtil.sendMessage(neko.getUUID(), sender.getUUID(), prompt, aiMessage, response -> {
+            if (sender.getServer() == null) return;
+            sender.getServer().execute(() -> {
+                if (sender.isRemoved() || neko.isRemoved()) return;
+                String text = response != null && response.getResponse() != null
+                        ? response.getResponse() : "AI service returned an empty response.";
+                String r = Messaging.format(text, neko,
+                        Collections.singletonList(LanguageUtil.prefix), ConfigUtil.getChatFormat());
+                sender.sendSystemMessage(Component.literal(r));
+            });
         });
     }
 
